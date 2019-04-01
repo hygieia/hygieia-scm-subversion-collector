@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+
+<document>
+    <properties>
+        <title>Home</title>
+        <author email="christopher.tompkins@capitalone.com">Capital One Maven Plugins Team</author>
+    </properties>
+    <body>
+        <!-- ================================================== -->
+        <section name="Capital One eratocode Maven Plugin">
+
+            <p>
+                This project is a <a href="http://maven.apache.org/plugins/">Maven Plugin</a> specifically for
+                running eratocode scans as part of your mavenized build.
+            </p>
+        </section>
+        <!-- ================================================== -->
+        <section name="Documentation">
+            <p>
+                The package descriptions in the <a href="apidocs/index.html">JavaDoc</a> give an overview
+                of the available features
+                and various <a href="project-reports.html">project reports</a> are provided. Furthermore, we have a
+                <a href="userguide.html">user guide</a> for those wishing to use this project to run eratocode scans
+                using a mavenized process.
+            </p>
+        </section>
+        <section name="Getting Involved">
+            <p>
+                The <a href="https://github.kdc.capitalone.com/c1-build-plugins">c1-build-plugins</a> is the main channel of
+                communication for contributors. Please find the project that you are interested in and use the GitHub
+                issue tracking system to get involved. Also, feel free to contact anyone who has commits in the
+                repositories with questions. Please read the
+                <a href="https://github.kdc.capitalone.com/c1-build-plugins/c1-eratocode-maven-plugin/blob/master/CONTRIBUTING.md">
+                    CONTRIBUTING.md
+                </a> before attempting to submit any code. It will be clear if you have not, and your patch will be less
+                likely to be accepted.
+            </p>
+            <ul>
+                <li>Ideas looking for code:
+                    <a href="https://github.kdc.capitalone.com/c1-build-plugins/c1-eratocode-maven-plugin/issues?utf8=%E2%9C%93&amp;q=is%3Aopen%20is%3Aissue">
+                        Patches/Features Needed
+                    </a>
+                </li>
+                <li>Issues with patches, looking for reviews:
+                    <a href="https://github.kdc.capitalone.com/c1-build-plugins/c1-eratocode-maven-plugin/pulls">
+                        Pull Requests
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- ================================================== -->
+        <section name="Support">
+            <p>
+                The <a href="https://github.kdc.capitalone.com/c1-build-plugins/c1-eratocode-maven-plugin/issues">github issue tracking system
+            </a> act as the main support forum.
+            </p>
+            <p>
+                Bug reports and enhancements are also welcomed via the <a
+                    href="https://github.kdc.capitalone.com/c1-build-plugins/c1-eratocode-maven-plugin/issues">github issue tracking system
+            </a> issue tracker.
+                Please read the instructions carefully.
+            </p>
+        </section>
+        <!-- ================================================== -->
+    </body>
+</document>
