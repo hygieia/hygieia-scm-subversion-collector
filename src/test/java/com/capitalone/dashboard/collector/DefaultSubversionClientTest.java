@@ -51,6 +51,5 @@ public class DefaultSubversionClientTest {
     assertEquals(2, commits.size());
     assertEquals("Commit 1", commits.get(0).getScmCommitLog());
     assertEquals("Commit 2", commits.get(1).getScmCommitLog());
-
   }
 }
