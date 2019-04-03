@@ -10,40 +10,40 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "subversion")
 public class SubversionSettings {
 
-    private String cron;
-    private String username;
-    private String password;
-    private int commitThresholdDays;
+  private String cron;
+  private String username;
+  private String password;
+  private int commitThresholdDays;
 
-    public String getCron() {
-        return cron;
-    }
+  public String getCron() {
+    return cron;
+  }
 
-    public void setCron(String cron) {
-        this.cron = cron;
-    }
+  public void setCron(String cron) {
+    this.cron = cron;
+  }
 
-    public String getUsername() {
-        return username;
-    }
+  public String getUsername() {
+    return username;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public int getCommitThresholdDays() {
-        return commitThresholdDays;
-    }
+  public int getCommitThresholdDays() {
+    return commitThresholdDays;
+  }
 
-    public void setCommitThresholdDays(int commitThresholdDays) {
-        this.commitThresholdDays = commitThresholdDays;
-    }
+  public void setCommitThresholdDays(int commitThresholdDays) {
+    this.commitThresholdDays = commitThresholdDays;
+  }
 }

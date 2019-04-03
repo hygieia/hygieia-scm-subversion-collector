@@ -37,506 +37,507 @@ import java.util.List;
 
 public class WorkingCopy {
 
-    private final TestOptions testOptions;
-    private final File workingCopyDirectory;
+  private final TestOptions testOptions;
+  private final File workingCopyDirectory;
 
-    private SvnOperationFactory clientManager;
-    private long currentRevision;
+  private SvnOperationFactory clientManager;
+  private long currentRevision;
 
-    private PrintWriter logger;
-    private SVNURL repositoryUrl;
-    private SvnWcGeneration wcGeneration;
+  private PrintWriter logger;
+  private SVNURL repositoryUrl;
+  private SvnWcGeneration wcGeneration;
 
-    public WorkingCopy(TestOptions testOptions, File workingCopyDirectory) {
-        this.testOptions = testOptions;
-        this.workingCopyDirectory = workingCopyDirectory;
-        this.currentRevision = -1;
+  public WorkingCopy(TestOptions testOptions, File workingCopyDirectory) {
+    this.testOptions = testOptions;
+    this.workingCopyDirectory = workingCopyDirectory;
+    this.currentRevision = -1;
+  }
+
+  public void setWcGeneration(SvnWcGeneration generation) {
+    this.wcGeneration = generation;
+    if (clientManager != null) {
+      clientManager.setPrimaryWcGeneration(wcGeneration);
     }
-    
-    public void setWcGeneration(SvnWcGeneration generation) {
-        this.wcGeneration = generation;
-        if (clientManager != null) {
-            clientManager.setPrimaryWcGeneration(wcGeneration);
+  }
+
+  public void setRepositoryUrl(SVNURL repositoryUrl) {
+    this.repositoryUrl = repositoryUrl;
+  }
+
+  public File deleteFile(String relativePath) throws SVNException {
+    SVNFileUtil.deleteAll(getFile(relativePath), true);
+    return getFile(relativePath);
+  }
+
+  public File changeFileContents(String relativePath, String contents) throws SVNException {
+    TestUtil.writeFileContentsString(getFile(relativePath), contents);
+    return getFile(relativePath);
+  }
+
+  public File getFile(String relativePath) {
+    return new File(getWorkingCopyDirectory(), relativePath);
+  }
+
+  public long checkoutLatestRevision(SVNURL repositoryUrl) throws SVNException {
+    return checkoutRevision(repositoryUrl, SVNRepository.INVALID_REVISION);
+  }
+
+  public long checkoutRevision(SVNURL repositoryUrl, long revision) throws SVNException {
+    return checkoutRevision(repositoryUrl, revision, true);
+  }
+
+  public long checkoutRevision(SVNURL repositoryUrl, long revision, boolean ignoreExternals) throws SVNException {
+    disposeLogger();
+    SVNFileUtil.deleteFile(getLogFile());
+
+    beforeOperation();
+
+    log("Checking out " + repositoryUrl);
+
+    final SvnCheckout checkout = getOperationFactory().createCheckout();
+    checkout.setIgnoreExternals(ignoreExternals);
+
+    this.repositoryUrl = repositoryUrl;
+
+    final boolean isWcExists = getWorkingCopyDirectory().isDirectory();
+    try {
+      checkout.setSingleTarget(SvnTarget.fromFile(getWorkingCopyDirectory()));
+      checkout.setSource(SvnTarget.fromURL(repositoryUrl, revision >= 0 ? SVNRevision.create(revision) : SVNRevision.HEAD));
+      checkout.setRevision(revision >= 0 ? SVNRevision.create(revision) : SVNRevision.HEAD);
+      checkout.setDepth(SVNDepth.INFINITY);
+      checkout.setAllowUnversionedObstructions(true);
+      currentRevision = checkout.run();
+    } catch (Throwable th) {
+      if (isWcExists) {
+        SVNFileUtil.deleteAll(getWorkingCopyDirectory(), true);
+        checkout.run();
+      } else {
+        wrapThrowable(th);
+      }
+
+    }
+
+    log("Checked out " + repositoryUrl);
+    checkNativeStatusShowsNoChanges();
+    afterOperation();
+
+    return currentRevision;
+  }
+
+  public void updateToRevision(long revision) throws SVNException {
+    beforeOperation();
+
+    log("Updating to revision " + revision);
+    SvnUpdate up = getOperationFactory().createUpdate();
+    up.setIgnoreExternals(true);
+    up.setSingleTarget(SvnTarget.fromFile(getWorkingCopyDirectory()));
+    up.setRevision(revision >= 0 ? SVNRevision.create(revision) : SVNRevision.HEAD);
+    up.setDepth(SVNDepth.INFINITY);
+    up.setAllowUnversionedObstructions(true);
+    try {
+      currentRevision = up.run()[0];
+    } catch (Throwable th) {
+      wrapThrowable(th);
+    }
+
+    log("Updated to revision " + currentRevision);
+    checkNativeStatusShowsNoChanges();
+    afterOperation();
+  }
+
+  public File findAnyDirectory() {
+    final File workingCopyDirectory = getWorkingCopyDirectory();
+    final File[] files = SVNFileListUtil.listFiles(workingCopyDirectory);
+    if (files != null) {
+      for (File file : files) {
+        if (file.isDirectory() && !file.getName().equals(SVNFileUtil.getAdminDirectoryName())) {
+          return file;
         }
+      }
     }
 
-    public void setRepositoryUrl(SVNURL repositoryUrl) {
-        this.repositoryUrl = repositoryUrl;
-    }
-    
-    public File deleteFile(String relativePath) throws SVNException {
-        SVNFileUtil.deleteAll(getFile(relativePath), true);
-        return getFile(relativePath);
-    }
+    throwException("The repository contains no directories, run the tests with another repository");
+    return null;
+  }
 
-    public File changeFileContents(String relativePath, String contents) throws SVNException {
-        TestUtil.writeFileContentsString(getFile(relativePath), contents);
-        return getFile(relativePath);
-    }
-
-    public File getFile(String relativePath) {
-        return new File(getWorkingCopyDirectory(), relativePath);
+  public File findAnotherDirectory(File directory) {
+    final File workingCopyDirectory = getWorkingCopyDirectory();
+    final File[] files = SVNFileListUtil.listFiles(workingCopyDirectory);
+    if (files != null) {
+      for (File file : files) {
+        if (file.isDirectory() && !file.getName().equals(SVNFileUtil.getAdminDirectoryName()) && !file.getAbsolutePath().equals(directory.getAbsolutePath())) {
+          return file;
+        }
+      }
     }
 
-    public long checkoutLatestRevision(SVNURL repositoryUrl) throws SVNException {
-        return checkoutRevision(repositoryUrl, SVNRepository.INVALID_REVISION);
+    throwException("The repository root should contain at least two directories, please run the tests with another repository");
+    return null;
+  }
+
+  public void copyAsChild(File directory, File anotherDirectory) throws SVNException {
+    beforeOperation();
+
+    log("Copying " + directory + " as a child of " + anotherDirectory);
+
+    final SvnCopy copyClient = getOperationFactory().createCopy();
+    copyClient.addCopySource(SvnCopySource.create(SvnTarget.fromFile(directory), SVNRevision.WORKING));
+    copyClient.setSingleTarget(SvnTarget.fromFile(anotherDirectory));
+    copyClient.setFailWhenDstExists(false);
+    try {
+      copyClient.run();
+    } catch (Throwable th) {
+      wrapThrowable(th);
     }
-    public long checkoutRevision(SVNURL repositoryUrl, long revision) throws SVNException {
-        return checkoutRevision(repositoryUrl, revision, true);
+
+    log("Copied " + directory + " as a child of " + anotherDirectory);
+
+    afterOperation();
+  }
+
+  public long commit(String commitMessage) throws SVNException {
+    beforeOperation();
+
+    log("Committing ");
+
+    final SvnCommit commitClient = getOperationFactory().createCommit();
+    commitClient.setSingleTarget(SvnTarget.fromFile(getWorkingCopyDirectory()));
+    commitClient.setCommitMessage(commitMessage);
+    commitClient.setDepth(SVNDepth.INFINITY);
+    commitClient.setForce(true);
+
+    SVNCommitInfo commitInfo = null;
+    try {
+      commitInfo = commitClient.run();
+    } catch (Throwable th) {
+      wrapThrowable(th);
     }
 
-    public long checkoutRevision(SVNURL repositoryUrl, long revision, boolean ignoreExternals) throws SVNException {
-        disposeLogger();
-        SVNFileUtil.deleteFile(getLogFile());
+    log("Committed revision " + (commitInfo == null ? "none" : commitInfo.getNewRevision()));
+    checkNativeStatusShowsNoChanges();
+    afterOperation();
 
-        beforeOperation();
+    return commitInfo == null ? -1 : commitInfo.getNewRevision();
+  }
 
-        log("Checking out " + repositoryUrl);
+  public void add(File file) throws SVNException {
+    beforeOperation();
 
-        final SvnCheckout checkout = getOperationFactory().createCheckout();
-        checkout.setIgnoreExternals(ignoreExternals);
+    log("Adding " + file);
 
-        this.repositoryUrl = repositoryUrl;
+    SvnScheduleForAddition add = getOperationFactory().createScheduleForAddition();
+    add.setSingleTarget(SvnTarget.fromFile(file));
+    add.setDepth(SVNDepth.INFINITY);
+    add.setIncludeIgnored(true);
+    add.setAddParents(true);
 
-        final boolean isWcExists = getWorkingCopyDirectory().isDirectory();
-        try {
-            checkout.setSingleTarget(SvnTarget.fromFile(getWorkingCopyDirectory()));
-            checkout.setSource(SvnTarget.fromURL(repositoryUrl, revision >= 0 ? SVNRevision.create(revision) : SVNRevision.HEAD));
-            checkout.setRevision(revision >= 0 ? SVNRevision.create(revision) : SVNRevision.HEAD);
-            checkout.setDepth(SVNDepth.INFINITY);
-            checkout.setAllowUnversionedObstructions(true);
-            currentRevision = checkout.run();
-        } catch (Throwable th) {
-            if (isWcExists) {
-                SVNFileUtil.deleteAll(getWorkingCopyDirectory(), true);
-                checkout.run();
-            } else {
-                wrapThrowable(th);
-            }
-                
+    try {
+      add.run();
+    } catch (Throwable th) {
+      wrapThrowable(th);
+    }
+
+    log("Added " + file);
+
+    afterOperation();
+  }
+
+  public void revert() throws SVNException {
+    beforeOperation();
+
+    log("Reverting working copy");
+
+    SvnRevert revert = getOperationFactory().createRevert();
+    revert.setSingleTarget(SvnTarget.fromFile(getWorkingCopyDirectory()));
+    revert.setDepth(SVNDepth.INFINITY);
+    try {
+      revert.run();
+    } catch (Throwable th) {
+      wrapThrowable(th);
+    }
+
+    log("Reverted working copy");
+    checkNativeStatusShowsNoChanges();
+    afterOperation();
+  }
+
+  public List<File> getChildren() {
+    final List<File> childrenList = new ArrayList<File>();
+
+    final File[] children = SVNFileListUtil.listFiles(getWorkingCopyDirectory());
+    if (children != null) {
+      for (File child : children) {
+        if (!child.getName().equals(SVNFileUtil.getAdminDirectoryName())) {
+          childrenList.add(child);
+        }
+      }
+    }
+    return childrenList;
+  }
+
+  public void setProperty(File file, String propertyName, SVNPropertyValue propertyValue) throws SVNException {
+    beforeOperation();
+
+    log("Setting property " + propertyName + " on " + file);
+
+    SvnSetProperty ps = getOperationFactory().createSetProperty();
+    ps.setSingleTarget(SvnTarget.fromFile(file));
+    ps.setPropertyName(propertyName);
+    ps.setPropertyValue(propertyValue);
+    ps.setDepth(SVNDepth.EMPTY);
+    ps.setForce(true);
+
+    try {
+      ps.run();
+    } catch (Throwable th) {
+      wrapThrowable(th);
+    }
+
+    log("Set property " + propertyName + " on " + file);
+
+    afterOperation();
+  }
+
+  public void delete(File file) throws SVNException {
+    beforeOperation();
+
+    log("Deleting " + file);
+
+    SvnScheduleForRemoval rm = getOperationFactory().createScheduleForRemoval();
+    rm.setSingleTarget(SvnTarget.fromFile(file));
+    rm.setForce(true);
+    try {
+      rm.run();
+    } catch (Throwable th) {
+      wrapThrowable(th);
+    }
+
+    log("Deleted " + file);
+
+    afterOperation();
+  }
+
+  public long getCurrentRevision() {
+    return currentRevision;
+  }
+
+  public SVNURL getRepositoryUrl() {
+    return repositoryUrl;
+  }
+
+  private void checkWorkingCopyConsistency() {
+    final File wcDbFile = getWCDbFile();
+    if (!wcDbFile.exists()) {
+      log("No wc.db, maybe running on the old SVN working copy format, integrity check skipped");
+      return;
+    }
+    final String wcDbPath = wcDbFile.getAbsolutePath().replace('/', File.separatorChar);
+
+    final ProcessBuilder processBuilder = new ProcessBuilder();
+    processBuilder.command(getSqlite3Command(), wcDbPath, "pragma integrity_check;");
+
+    BufferedReader bufferedReader = null;
+    try {
+      final Process process = processBuilder.start();
+      if (process != null) {
+        bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+        final String line = bufferedReader.readLine();
+        if (line == null || !"ok".equals(line.trim())) {
+          final String notConsistentMessage = "SVN working copy database is not consistent.";
+
+          throwException(notConsistentMessage);
         }
 
-        log("Checked out " + repositoryUrl);
-        checkNativeStatusShowsNoChanges();
-        afterOperation();
-
-        return currentRevision;
+        process.waitFor();
+      }
+    } catch (IOException e) {
+      log("failed to start sqlite3");
+    } catch (InterruptedException e) {
+      log("failed to start sqlite3");
+    } finally {
+      SVNFileUtil.closeFile(bufferedReader);
     }
+  }
 
-    public void updateToRevision(long revision) throws SVNException {
-        beforeOperation();
+  public File getWCDbFile() {
+    return new File(getAdminDirectory(), ISVNWCDb.SDB_FILE).getAbsoluteFile();
+  }
 
-        log("Updating to revision " + revision);
-        SvnUpdate up = getOperationFactory().createUpdate();
-        up.setIgnoreExternals(true);
-        up.setSingleTarget(SvnTarget.fromFile(getWorkingCopyDirectory()));
-        up.setRevision(revision >= 0 ? SVNRevision.create(revision) : SVNRevision.HEAD);
-        up.setDepth(SVNDepth.INFINITY);
-        up.setAllowUnversionedObstructions(true);
-        try {
-            currentRevision = up.run()[0];
-        } catch (Throwable th) {
-            wrapThrowable(th);
-        }
+  private File getAdminDirectory() {
+    return new File(getWorkingCopyDirectory(), SVNFileUtil.getAdminDirectoryName()).getAbsoluteFile();
+  }
 
-        log("Updated to revision " + currentRevision);
-        checkNativeStatusShowsNoChanges();
-        afterOperation();
+  public void dispose() {
+    if (clientManager != null) {
+      clientManager.dispose();
+      clientManager = null;
     }
+    disposeLogger();
+  }
 
-    public File findAnyDirectory() {
-        final File workingCopyDirectory = getWorkingCopyDirectory();
-        final File[] files = SVNFileListUtil.listFiles(workingCopyDirectory);
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory() && !file.getName().equals(SVNFileUtil.getAdminDirectoryName())) {
-                    return file;
-                }
-            }
-        }
+  private void disposeLogger() {
+    SVNFileUtil.closeFile(logger);
+    logger = null;
+  }
 
-        throwException("The repository contains no directories, run the tests with another repository");
+  public SvnOperationFactory getOperationFactory() {
+    if (clientManager == null) {
+      clientManager = new SvnOperationFactory();
+      clientManager.setPrimaryWcGeneration(wcGeneration);
+    }
+    return clientManager;
+  }
+
+  private TestOptions getTestOptions() {
+    return testOptions;
+  }
+
+  public File getWorkingCopyDirectory() {
+    return workingCopyDirectory.getAbsoluteFile();
+  }
+
+  private String getSqlite3Command() {
+    return getTestOptions().getSqlite3Command();
+  }
+
+  public String getSvnCommand() {
+    return getTestOptions().getSvnCommand();
+  }
+
+  public PrintWriter getLogger() {
+    if (logger == null) {
+
+      final File adminDirectory = getAdminDirectory();
+      if (!adminDirectory.exists()) {
+        //not checked out yet
         return null;
+      }
+
+      final File testLogFile = getLogFile();
+
+      FileWriter fileWriter = null;
+      try {
+        fileWriter = new FileWriter(testLogFile, true);
+      } catch (IOException e) {
+        SVNFileUtil.closeFile(fileWriter);
+        throw new RuntimeException(e);
+      }
+
+      logger = new PrintWriter(fileWriter);
     }
+    return logger;
+  }
 
-    public File findAnotherDirectory(File directory) {
-        final File workingCopyDirectory = getWorkingCopyDirectory();
-        final File[] files = SVNFileListUtil.listFiles(workingCopyDirectory);
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory() && !file.getName().equals(SVNFileUtil.getAdminDirectoryName()) && !file.getAbsolutePath().equals(directory.getAbsolutePath())) {
-                    return file;
-                }
-            }
-        }
+  private File getLogFile() {
+    return new File(getAdminDirectory(), "test.log");
+  }
 
-        throwException("The repository root should contain at least two directories, please run the tests with another repository");
-        return null;
+  private void log(String message) {
+    final PrintWriter logger = getLogger();
+    if (logger != null) {
+      logger.println("[" + new Date() + "]" + message);
+      logger.flush();
     }
+  }
 
-    public void copyAsChild(File directory, File anotherDirectory) throws SVNException {
-        beforeOperation();
-
-        log("Copying " + directory + " as a child of " + anotherDirectory);
-
-        final SvnCopy copyClient = getOperationFactory().createCopy();
-        copyClient.addCopySource(SvnCopySource.create(SvnTarget.fromFile(directory), SVNRevision.WORKING));
-        copyClient.setSingleTarget(SvnTarget.fromFile(anotherDirectory));
-        copyClient.setFailWhenDstExists(false);
-        try {
-            copyClient.run();
-        } catch (Throwable th) {
-            wrapThrowable(th);
-        }
-
-        log("Copied " + directory + " as a child of " + anotherDirectory);
-
-        afterOperation();
-    }
-
-    public long commit(String commitMessage) throws SVNException {
-        beforeOperation();
-
-        log("Committing ");
-
-        final SvnCommit commitClient = getOperationFactory().createCommit();
-        commitClient.setSingleTarget(SvnTarget.fromFile(getWorkingCopyDirectory()));
-        commitClient.setCommitMessage(commitMessage);
-        commitClient.setDepth(SVNDepth.INFINITY);
-        commitClient.setForce(true);
-        
-        SVNCommitInfo commitInfo = null;
-        try {
-            commitInfo = commitClient.run();
-        } catch (Throwable th) {
-            wrapThrowable(th);
-        }
-
-        log("Committed revision " + (commitInfo == null ? "none" : commitInfo.getNewRevision()));
-        checkNativeStatusShowsNoChanges();
-        afterOperation();
-
-        return commitInfo == null ? -1 : commitInfo.getNewRevision();
-    }
-
-    public void add(File file) throws SVNException {
-        beforeOperation();
-
-        log("Adding " + file);
-
-        SvnScheduleForAddition add = getOperationFactory().createScheduleForAddition();
-        add.setSingleTarget(SvnTarget.fromFile(file));
-        add.setDepth(SVNDepth.INFINITY);
-        add.setIncludeIgnored(true);
-        add.setAddParents(true);
-        
-        try {
-            add.run();
-        } catch (Throwable th) {
-            wrapThrowable(th);
-        }
-
-        log("Added " + file);
-
-        afterOperation();
-    }
-
-    public void revert() throws SVNException {
-        beforeOperation();
-
-        log("Reverting working copy");
-
-        SvnRevert revert = getOperationFactory().createRevert();
-        revert.setSingleTarget(SvnTarget.fromFile(getWorkingCopyDirectory()));
-        revert.setDepth(SVNDepth.INFINITY);
-        try {
-            revert.run();
-        } catch (Throwable th) {
-            wrapThrowable(th);
-        }
-
-        log("Reverted working copy");
-        checkNativeStatusShowsNoChanges();
-        afterOperation();
-    }
-
-    public List<File> getChildren() {
-        final List<File> childrenList = new ArrayList<File>();
-
-        final File[] children = SVNFileListUtil.listFiles(getWorkingCopyDirectory());
-        if (children != null) {
-            for (File child : children) {
-                if (!child.getName().equals(SVNFileUtil.getAdminDirectoryName())) {
-                    childrenList.add(child);
-                }
-            }
-        }
-        return childrenList;
-    }
-
-    public void setProperty(File file, String propertyName, SVNPropertyValue propertyValue) throws SVNException {
-        beforeOperation();
-
-        log("Setting property " + propertyName + " on " + file);
-
-        SvnSetProperty ps = getOperationFactory().createSetProperty();
-        ps.setSingleTarget(SvnTarget.fromFile(file));
-        ps.setPropertyName(propertyName);
-        ps.setPropertyValue(propertyValue);
-        ps.setDepth(SVNDepth.EMPTY);
-        ps.setForce(true);
-
-        try {
-            ps.run();
-        } catch (Throwable th) {
-            wrapThrowable(th);
-        }
-
-        log("Set property " + propertyName + " on " + file);
-
-        afterOperation();
-    }
-
-    public void delete(File file) throws SVNException {
-        beforeOperation();
-
-        log("Deleting " + file);
-
-        SvnScheduleForRemoval rm = getOperationFactory().createScheduleForRemoval();
-        rm.setSingleTarget(SvnTarget.fromFile(file));
-        rm.setForce(true);
-        try {
-            rm.run();
-        } catch (Throwable th) {
-            wrapThrowable(th);
-        }
-
-        log("Deleted " + file);
-
-        afterOperation();
-    }
-
-    public long getCurrentRevision() {
-        return currentRevision;
-    }
-
-    public SVNURL getRepositoryUrl() {
-        return repositoryUrl;
-    }
-
-    private void checkWorkingCopyConsistency() {
-        final File wcDbFile = getWCDbFile();
-        if (!wcDbFile.exists()) {
-            log("No wc.db, maybe running on the old SVN working copy format, integrity check skipped");
-            return;
-        }
-        final String wcDbPath = wcDbFile.getAbsolutePath().replace('/', File.separatorChar);
-
-        final ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(getSqlite3Command(), wcDbPath, "pragma integrity_check;");
-
-        BufferedReader bufferedReader = null;
-        try {
-            final Process process = processBuilder.start();
-            if (process != null) {
-                bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-                final String line = bufferedReader.readLine();
-                if (line == null || !"ok".equals(line.trim())) {
-                    final String notConsistentMessage = "SVN working copy database is not consistent.";
-
-                    throwException(notConsistentMessage);
-                }
-
-                process.waitFor();
-            }
-        } catch (IOException e) {
-            log("failed to start sqlite3");
-        } catch (InterruptedException e) {
-            log("failed to start sqlite3");
-        } finally {
-            SVNFileUtil.closeFile(bufferedReader);
-        }
-    }
-
-    public File getWCDbFile() {
-        return new File(getAdminDirectory(), ISVNWCDb.SDB_FILE).getAbsoluteFile();
-    }
-
-    private File getAdminDirectory() {
-        return new File(getWorkingCopyDirectory(), SVNFileUtil.getAdminDirectoryName()).getAbsoluteFile();
-    }
-
-    public void dispose() {
-        if (clientManager != null) {
-            clientManager.dispose();
-            clientManager = null;
-        }
-        disposeLogger();
-    }
-
-    private void disposeLogger() {
-        SVNFileUtil.closeFile(logger);
-        logger = null;
-    }
-
-    public SvnOperationFactory getOperationFactory() {
-        if (clientManager == null) {
-            clientManager = new SvnOperationFactory();
-            clientManager.setPrimaryWcGeneration(wcGeneration);
-        }
-        return clientManager;
-    }
-
-    private TestOptions getTestOptions() {
-        return testOptions;
-    }
-
-    public File getWorkingCopyDirectory() {
-        return workingCopyDirectory.getAbsoluteFile();
-    }
-
-    private String getSqlite3Command() {
-        return getTestOptions().getSqlite3Command();
-    }
-
-    public String getSvnCommand() {
-        return getTestOptions().getSvnCommand();
-    }
-
-    public PrintWriter getLogger() {
-        if (logger == null) {
-
-            final File adminDirectory = getAdminDirectory();
-            if (!adminDirectory.exists()) {
-                //not checked out yet
-                return null;
-            }
-
-            final File testLogFile = getLogFile();
-
-            FileWriter fileWriter = null;
-            try {
-                fileWriter = new FileWriter(testLogFile, true);
-            } catch (IOException e) {
-                SVNFileUtil.closeFile(fileWriter);
-                throw new RuntimeException(e);
-            }
-
-            logger = new PrintWriter(fileWriter);
-        }
-        return logger;
-    }
-
-    private File getLogFile() {
-        return new File(getAdminDirectory(), "test.log");
-    }
-
-    private void log(String message) {
-        final PrintWriter logger = getLogger();
-        if (logger != null) {
-            logger.println("[" + new Date() + "]" + message);
-            logger.flush();
-        }
-    }
-
-    private void beforeOperation() throws SVNException {
-        log("");
+  private void beforeOperation() throws SVNException {
+    log("");
 
 //        backupWcDbFile();
-    }
+  }
 
-    private void afterOperation() {
-        checkWorkingCopyConsistency();
-        log("Checked for consistency");
-        
-        disposeLogger();
-    }
+  private void afterOperation() {
+    checkWorkingCopyConsistency();
+    log("Checked for consistency");
 
-    private void checkNativeStatusShowsNoChanges() {
-        log("Checking for local changes with native svn");
+    disposeLogger();
+  }
 
-        final ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command(getSvnCommand(), "status", "--ignore-externals", "-q");
-        processBuilder.directory(getWorkingCopyDirectory());
+  private void checkNativeStatusShowsNoChanges() {
+    log("Checking for local changes with native svn");
 
-        BufferedReader bufferedReader = null;
-        try {
-            final Process process = processBuilder.start();
-            if (process != null) {
-                bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+    final ProcessBuilder processBuilder = new ProcessBuilder();
+    processBuilder.command(getSvnCommand(), "status", "--ignore-externals", "-q");
+    processBuilder.directory(getWorkingCopyDirectory());
 
-                final List<String> lines = new ArrayList<String>();
-                while (true) {
-                    String line = bufferedReader.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    if (line.endsWith("\n")) {
-                        line = line.substring(0, line.length() - 1);
-                    }
-                    if (line.endsWith("\r")) {
-                        line = line.substring(0, line.length() - 1);
-                    }
-                    if (line.length() > 0) {
-                        lines.add(line);
-                    }
-                }
+    BufferedReader bufferedReader = null;
+    try {
+      final Process process = processBuilder.start();
+      if (process != null) {
+        bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-                if (lines.size() > 0) {
-                    final StringBuilder stringBuilder = new StringBuilder("SVN status showed:").append('\n');
-                    for (String line : lines) {
-                        stringBuilder.append(line).append('\n');
-                    }
-                    log(stringBuilder.toString());
-                    log("");
-                }
-
-                final String localChangesMessage = "SVN status shows local changes for the working copy.";
-                for (String line : lines) {
-                    if (line.charAt(0) != ' ' && line.charAt(0) != 'M') {
-                        throwException(localChangesMessage);
-                    } else if (line.charAt(1) != ' ') {
-                        throwException(localChangesMessage);
-                    }
-                }
-
-                process.waitFor();
-            }
-
-        } catch (IOException e) {
-            wrapThrowable(e);
-        } catch (InterruptedException e) {
-            wrapThrowable(e);
-        } finally {
-            SVNFileUtil.closeFile(bufferedReader);
+        final List<String> lines = new ArrayList<String>();
+        while (true) {
+          String line = bufferedReader.readLine();
+          if (line == null) {
+            break;
+          }
+          if (line.endsWith("\n")) {
+            line = line.substring(0, line.length() - 1);
+          }
+          if (line.endsWith("\r")) {
+            line = line.substring(0, line.length() - 1);
+          }
+          if (line.length() > 0) {
+            lines.add(line);
+          }
         }
 
-        log("No local changes");
+        if (lines.size() > 0) {
+          final StringBuilder stringBuilder = new StringBuilder("SVN status showed:").append('\n');
+          for (String line : lines) {
+            stringBuilder.append(line).append('\n');
+          }
+          log(stringBuilder.toString());
+          log("");
+        }
+
+        final String localChangesMessage = "SVN status shows local changes for the working copy.";
+        for (String line : lines) {
+          if (line.charAt(0) != ' ' && line.charAt(0) != 'M') {
+            throwException(localChangesMessage);
+          } else if (line.charAt(1) != ' ') {
+            throwException(localChangesMessage);
+          }
+        }
+
+        process.waitFor();
+      }
+
+    } catch (IOException e) {
+      wrapThrowable(e);
+    } catch (InterruptedException e) {
+      wrapThrowable(e);
+    } finally {
+      SVNFileUtil.closeFile(bufferedReader);
     }
 
-    private void throwException(String message) {
-        final RuntimeException runtimeException = new RuntimeException(message);
-        runtimeException.printStackTrace(getLogger());
-        throw runtimeException;
-    }
+    log("No local changes");
+  }
 
-    private void wrapThrowable(Throwable th) {
-        th.printStackTrace(getLogger());
-        throw new RuntimeException(th);
-    }
+  private void throwException(String message) {
+    final RuntimeException runtimeException = new RuntimeException(message);
+    runtimeException.printStackTrace(getLogger());
+    throw runtimeException;
+  }
 
-    public SvnStatus getStatus(String path) throws SVNException {
-        SvnGetStatus st = new SvnOperationFactory().createGetStatus();
-        st.setDepth(SVNDepth.EMPTY);
-        st.setSingleTarget(SvnTarget.fromFile(getFile(path)));
-        return st.run();
-    }
+  private void wrapThrowable(Throwable th) {
+    th.printStackTrace(getLogger());
+    throw new RuntimeException(th);
+  }
 
-    public void copy(String srcPath, String dstPath) throws SVNException {
-        SvnCopy cp = new SvnOperationFactory().createCopy();
-        cp.addCopySource(SvnCopySource.create(SvnTarget.fromFile(getFile(srcPath)), SVNRevision.WORKING));
-        cp.setSingleTarget(SvnTarget.fromFile(getFile(dstPath)));
-        cp.run();
-    }
+  public SvnStatus getStatus(String path) throws SVNException {
+    SvnGetStatus st = new SvnOperationFactory().createGetStatus();
+    st.setDepth(SVNDepth.EMPTY);
+    st.setSingleTarget(SvnTarget.fromFile(getFile(path)));
+    return st.run();
+  }
+
+  public void copy(String srcPath, String dstPath) throws SVNException {
+    SvnCopy cp = new SvnOperationFactory().createCopy();
+    cp.addCopySource(SvnCopySource.create(SvnTarget.fromFile(getFile(srcPath)), SVNRevision.WORKING));
+    cp.setSingleTarget(SvnTarget.fromFile(getFile(dstPath)));
+    cp.run();
+  }
 }

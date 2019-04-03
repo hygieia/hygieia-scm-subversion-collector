@@ -6,6 +6,7 @@
   <description>Subversion collector micorservice</description>
   <url>https://github.com/capitalone/Hygieia</url>
   <packaging>jar</packaging>
+  <version>3.0.2-SNAPSHOT</version>
 
   <artifactId>subversion-collector</artifactId>
 
@@ -33,18 +34,101 @@
     <jacoco.maven.plugin.version>0.8.3</jacoco.maven.plugin.version>
     <jacoco.coverage.percentage.minimum>0.760</jacoco.coverage.percentage.minimum>
     <jacoco.classes.missed.minimum>15</jacoco.classes.missed.minimum>
-    <java.version>1.8</java.version>
+    <java.compilation.source>1.8</java.compilation.source>
+    <java.compilation.target>1.8</java.compilation.target>
+    <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
+    <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
     <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
     <mockito.all.version>1.10.19</mockito.all.version>
     <org.joda.joda-convert.version>1.8.1</org.joda.joda-convert.version>
     <svnkit.version>1.8.7</svnkit.version>
   </properties>
 
+
+
+  <dependencies>
+    <dependency>
+      <groupId>com.capitalone.dashboard</groupId>
+      <artifactId>core</artifactId>
+      <version>${com.capitalone.dashboard.core.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${commons.lang.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.joda</groupId>
+      <artifactId>joda-convert</artifactId>
+      <version>${org.joda.joda-convert.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.tmatesoft.svnkit</groupId>
+      <artifactId>svnkit</artifactId>
+      <version>${svnkit.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito.all.version}</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>${java.compilation.source}</source>
+          <target>${java.compilation.target}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven.checkstyle.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <configuration>
+              <configLocation>src/devops/checkstyle.xml</configLocation>
+              <encoding>UTF-8</encoding>
+              <consoleOutput>true</consoleOutput>
+              <failsOnError>true</failsOnError>
+              <linkXRef>false</linkXRef>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>com.spotify</groupId>
@@ -163,53 +247,5 @@
       </plugin>
     </plugins>
   </reporting>
-
-  <dependencies>
-    <dependency>
-      <groupId>com.capitalone.dashboard</groupId>
-      <artifactId>core</artifactId>
-      <version>${com.capitalone.dashboard.core.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>${commons.io.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>${commons.lang.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.joda</groupId>
-      <artifactId>joda-convert</artifactId>
-      <version>${org.joda.joda-convert.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-mongodb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.tmatesoft.svnkit</groupId>
-      <artifactId>svnkit</artifactId>
-      <version>${svnkit.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>${mockito.all.version}</version>
-    </dependency>
-  </dependencies>
 
 </project>

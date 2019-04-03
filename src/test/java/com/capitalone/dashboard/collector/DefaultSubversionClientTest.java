@@ -47,7 +47,7 @@ public class DefaultSubversionClientTest {
     commitBuilder2.commit();
     SubversionRepo subversionRepo = new SubversionRepo();
     subversionRepo.setRepoUrl(url.toString());
-    List<Commit> commits =  subject.getCommits(subversionRepo, 1l);
+    List<Commit> commits = subject.getCommits(subversionRepo, 1l);
     assertEquals(2, commits.size());
     assertEquals("Commit 1", commits.get(0).getScmCommitLog());
     assertEquals("Commit 2", commits.get(1).getScmCommitLog());

@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface SubversionRepoRepository extends BaseCollectorItemRepository<SubversionRepo> {
 
-    @Query(value="{ 'collectorId' : ?0, options.url : ?1}")
-    SubversionRepo findSubversionRepo(ObjectId collectorId, String url);
+  @Query(value = "{ 'collectorId' : ?0, options.url : ?1}")
+  SubversionRepo findSubversionRepo(ObjectId collectorId, String url);
 
-    @Query(value="{ 'collectorId' : ?0, enabled: true}")
-    List<SubversionRepo> findEnabledSubversionRepos(ObjectId collectorId);
+  @Query(value = "{ 'collectorId' : ?0, enabled: true}")
+  List<SubversionRepo> findEnabledSubversionRepos(ObjectId collectorId);
 }
