@@ -36,6 +36,7 @@
     <jacoco.classes.missed.minimum>15</jacoco.classes.missed.minimum>
     <java.compilation.source>1.8</java.compilation.source>
     <java.compilation.target>1.8</java.compilation.target>
+    <maven.changes.plugin.version>2.12.1</maven.changes.plugin.version>
     <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
     <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
     <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
@@ -44,7 +45,19 @@
     <svnkit.version>1.8.7</svnkit.version>
   </properties>
 
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/Hygieia/hygieia-subversion-scm-collector/issues</url>
+  </issueManagement>
 
+  <developers>
+    <developer>
+      <name>Rob Tompkins</name>
+      <organization>Capital One</organization>
+      <email>christopher.tompkins@capitalone.com</email>
+      <id>chtompki</id>
+    </developer>
+  </developers>
 
   <dependencies>
     <dependency>
@@ -245,7 +258,77 @@
           </reportSet>
         </reportSets>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>${maven.changes.plugin.version}</version>
+        <configuration>
+          <xmlPath>${basedir}/src/changes/changes.xml</xmlPath>
+          <columnNames>Fix Version,Key,Component,Summary,Type,Resolution,Status</columnNames>
+          <!-- Sort cols in natural order when using JQL for JIRA 5.1 -->
+          <sortColumnNames>Fix Version DESC,Type,Key DESC</sortColumnNames>
+          <resolutionIds>Fixed</resolutionIds>
+          <statusIds>Closed</statusIds>
+          <!-- Don't include sub-task -->
+          <typeIds>Bug,New Feature,Task,Improvement,Wish,Test</typeIds>
+          <!-- For JIRA >= 5.1 -->
+          <useJql>true</useJql>
+          <onlyCurrentVersion>${changes.onlyCurrentVersion}</onlyCurrentVersion>
+          <maxEntries>${changes.maxEntries}</maxEntries>
+          <runOnlyAtExecutionRoot>${changes.runOnlyAtExecutionRoot}</runOnlyAtExecutionRoot>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
     </plugins>
   </reporting>
+
+  <profiles>
+    <profile>
+      <!--
+        Generate release notes in top-level directory from src/changes/changes.xml
+        Usage:
+        mvn changes:announcement-generate -Prelease-notes [-Dchanges.version=nnn]
+        Defining changes.version allows one to create the RN without first removing the SNAPSHOT suffix.
+        Requires file src/changes/release-notes.vm.
+        A sample template is available from:
+        https://svn.apache.org/repos/asf/commons/proper/commons-parent/trunk/src/changes/release-notes.vm
+      -->
+      <id>release-notes</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changes-plugin</artifactId>
+            <version>${maven.changes.plugin.version}</version>
+            <configuration>
+              <template>release-notes.vm</template>
+              <templateDirectory>src/changes</templateDirectory>
+              <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+              <announcementDirectory>.</announcementDirectory>
+              <announcementFile>RELEASE-NOTES.txt</announcementFile>
+              <announceParameters>
+                <releaseVersion>${version}</releaseVersion>
+              </announceParameters>
+            </configuration>
+            <executions>
+              <execution>
+                <id>create-release-notes</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>announcement-generate</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
