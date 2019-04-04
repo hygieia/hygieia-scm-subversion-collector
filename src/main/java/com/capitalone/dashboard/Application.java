@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.capitalone.dashboard;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Application configuration and bootstrap
+ * Application configuration and bootstrap.
  */
 @SpringBootApplication
 public class Application {
