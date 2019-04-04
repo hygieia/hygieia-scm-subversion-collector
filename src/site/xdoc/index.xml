@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+Copyright 2017 Capital One Financial Corporation All Rights Reserved.
+This software contains valuable trade secrets and proprietary information of Capital One and is protected by law. It
+may not be copied or distributed in any form or medium, disclosed to third parties, reverse engineered or used in any
+manner without prior written authorization from Capital One.
+-->
+<document>
+    <properties>
+        <title>Home</title>
+        <author email="christopher.tompkins@capitalone.com">Hygieia Team</author>
+    </properties>
+    <body>
+        <!-- ================================================== -->
+        <section name="Hygieia Subversion SCM Collector">
+            Welcome ot the Hygieia Subversion SCM Collector
+
+        </section>
+        <!-- ================================================== -->
+
+    </body>
+</document>
