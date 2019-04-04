@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.model.Collector;
@@ -42,7 +43,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * CollectorTask that fetches Commit information from Subversion
+ * CollectorTask that fetches Commit information from Subversion.
  */
 @Component
 public class SubversionCollectorTask extends CollectorTask<Collector> {
@@ -104,7 +105,7 @@ public class SubversionCollectorTask extends CollectorTask<Collector> {
   }
 
   /**
-   * Clean up unused deployment collector items
+   * Clean up unused deployment collector items.
    */
   @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts") // agreed PMD, fixme
   private void clean(Collector collector) {
@@ -167,7 +168,9 @@ public class SubversionCollectorTask extends CollectorTask<Collector> {
   }
 
   private long startRevision(SubversionRepo repo) {
-    Date revisionDate = new DateTime().minusDays(subversionSettings.getCommitThresholdDays()).toDate();
+    Date revisionDate = new DateTime()
+        .minusDays(subversionSettings.getCommitThresholdDays())
+        .toDate();
     long revisionLimit = subversionClient.getRevisionClosestTo(repo.getRepoUrl(), revisionDate);
     return revisionLimit > repo.getLatestRevision() ? revisionLimit : repo.getLatestRevision();
   }

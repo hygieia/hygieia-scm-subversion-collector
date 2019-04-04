@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.capitalone.dashboard.model;
 
 /**
@@ -41,15 +42,15 @@ public class SubversionRepo extends CollectorItem {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
 
-    SubversionRepo subversionRepo = (SubversionRepo) o;
+    SubversionRepo subversionRepo = (SubversionRepo) obj;
 
     return getRepoUrl().equals(subversionRepo.getRepoUrl());
   }

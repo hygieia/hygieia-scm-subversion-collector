@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.capitalone.dashboard.collector;
 
 import com.capitalone.dashboard.model.Commit;
@@ -31,7 +32,12 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 
 /**
  * SubversionClient implementation that uses SVNKit to fetch information about
@@ -70,6 +76,14 @@ public class DefaultSubversionClient implements SubversionClient {
     return commits;
   }
 
+  /**
+   * Returns the recent repository revision number for the particular moment
+   * in time - the closest one before or at the specified datestamp.
+   *
+   * @param url          url of subversion repository.
+   * @param revisionDate revision date.
+   * @return the svn revision number.
+   */
   public long getRevisionClosestTo(String url, Date revisionDate) {
 
     try {
@@ -86,7 +100,14 @@ public class DefaultSubversionClient implements SubversionClient {
     long endRevision = -1; //HEAD (the latest) revision
 
     try {
-      return getSvnRepository(url).log(new String[] {""}, null, startRevision, endRevision, true, true);
+      return getSvnRepository(url).log(
+          new String[] {""},
+          null,
+          startRevision,
+          endRevision,
+          true,
+          true
+      );
     } catch (SVNException svne) {
       LOG.error("Subversion repo: " + url, svne);
     }
