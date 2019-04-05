@@ -46,9 +46,9 @@ The <action> type attribute can be add,update,fix,remove.
     <body>
 
         <release version="3.0.2" date="YYYY-MM-DD" description="----">
-            <action issue="#1" type="add" dev="chtompki">Unit Tests</action>
-            <action issue="#2" type="add" dev="chtompki">Checkstyle</action>
-            <action issue="#3" type="add" dev="chtompki">maven-changes-plugin</action>
+            <action issue="1" type="add" dev="chtompki">Unit Tests</action>
+            <action issue="2" type="add" dev="chtompki">Checkstyle</action>
+            <action issue="3" type="add" dev="chtompki">maven-changes-plugin</action>
         </release>
 
     </body>
