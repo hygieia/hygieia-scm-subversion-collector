@@ -49,6 +49,7 @@
     </distributionManagement>
 
     <properties>
+        <apache.rat.plugin.version>0.13</apache.rat.plugin.version>
         <com.capitalone.dashboard.core.version>3.0.4</com.capitalone.dashboard.core.version>
         <commons.io.version>2.4</commons.io.version>
         <commons.lang.version>3.8.1</commons.lang.version>
@@ -61,11 +62,14 @@
         <maven.changes.plugin.version>2.12.1</maven.changes.plugin.version>
         <maven.checkstyle.plugin.version>3.0.0</maven.checkstyle.plugin.version>
         <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
+        <maven.javadoc.plugin.version>3.1.0</maven.javadoc.plugin.version>
+        <maven.pmd.plugin.version>3.11.0</maven.pmd.plugin.version>
         <maven.project-info.version>3.0.0</maven.project-info.version>
-        <maven-scm-publish-plugin.version></maven-scm-publish-plugin.version>
+        <maven.scm.publish.plugin.version>3.0.0</maven.scm.publish.plugin.version>
         <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
         <mockito.all.version>1.10.19</mockito.all.version>
         <org.joda.joda-convert.version>1.8.1</org.joda.joda-convert.version>
+        <spotbugs.plugin.version>3.1.11</spotbugs.plugin.version>
         <svnkit.version>1.8.7</svnkit.version>
     </properties>
 
@@ -147,6 +151,24 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+                <version>0.13.1</version>
+                <configuration>
+                    <parameter>
+                        <!-- see documentation -->
+                    </parameter>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>cmp</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven.checkstyle.plugin.version}</version>
@@ -169,6 +191,47 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>${apache.rat.plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>.tests/**</exclude>
+                        <exclude>.tests/**</exclude>
+                        <exclude>logs/**</exclude>
+                        <exclude>src/test/resources/org/tmatesoft/svn/test/apache.config.template</exclude>
+                        <exclude>src/test/resources/org/tmatesoft/svn/test/test.properties.template</exclude>
+                        <exclude>src/test/resources/org/tmatesoft/svn/test/svnserve.config.template</exclude>
+                        <exclude>src/main/resources/banner.txt</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.plugin.version}</version>
+                <dependencies>
+                    <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
+                    <dependency>
+                        <groupId>com.github.spotbugs</groupId>
+                        <artifactId>spotbugs</artifactId>
+                        <version>${spotbugs.plugin.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven.pmd.plugin.version}</version>
+                <configuration>
+                    <failOnViolation>false</failOnViolation>
+                    <rulesets>
+                        <ruleset>src/devops/pmd.xml</ruleset>
+                    </rulesets>
+                    <targetJdk>${java.compilation.target}</targetJdk>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <configuration>
@@ -183,29 +246,6 @@
                         </resource>
                     </resources>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${pmd.version}</version>
-                <configuration>
-                    <excludeRoots>
-                        <excludeRoot>${project.basedir}/target/generated-sources/java</excludeRoot>
-                    </excludeRoots>
-                    <rulesets>
-                        <ruleset>${project.basedir}/src/devops/pmd.xml</ruleset>
-                    </rulesets>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                            <!-- disabled for now: -->
-                            <!--<goal>cpd-check</goal>-->
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -253,6 +293,11 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.plugin.version}</version>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>${maven.site.plugin.version}</version>
@@ -271,6 +316,14 @@
 
     <reporting>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.version}</version>
+                <configuration>
+                    <extdirs>src/test</extdirs>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven.checkstyle.plugin.version}</version>
@@ -296,6 +349,51 @@
                     <reportSet>
                         <reports>
                             <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>com.github.siom79.japicmp</groupId>
+                <artifactId>japicmp-maven-plugin</artifactId>
+                <version>0.13.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>${apache.rat.plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>.tests/**</exclude>
+                        <exclude>logs/**</exclude>
+                        <exclude>src/test/resources/org/tmatesoft/svn/test/apache.config.template</exclude>
+                        <exclude>src/test/resources/org/tmatesoft/svn/test/test.properties.template</exclude>
+                        <exclude>src/test/resources/org/tmatesoft/svn/test/svnserve.config.template</exclude>
+                        <exclude>src/main/resources/banner.txt</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven.pmd.plugin.version}</version>
+                <configuration>
+                    <failOnViolation>false</failOnViolation>
+                    <rulesets>
+                        <ruleset>src/devops/pmd.xml</ruleset>
+                    </rulesets>
+                    <targetJdk>${java.compilation.target}</targetJdk>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>pmd</report>
+                            <report>cpd</report>
                         </reports>
                     </reportSet>
                 </reportSets>

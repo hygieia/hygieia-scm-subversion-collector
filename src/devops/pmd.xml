@@ -23,7 +23,6 @@
     </description>
 
     <rule ref="rulesets/internal/all-java.xml">
-        <exclude name="AbstractNaming"/>
         <exclude name="AddEmptyString"/>
         <exclude name="AppendCharacterWithChar"/>
         <exclude name="ArrayIsStoredDirectly"/>
@@ -35,7 +34,6 @@
         <exclude name="AvoidFinalLocalVariable"/>
         <exclude name="AvoidInstantiatingObjectsInLoops"/>
         <exclude name="AvoidLiteralsInIfCondition"/>
-        <exclude name="AvoidPrefixingMethodParameters"/>
         <exclude name="AvoidSynchronizedAtMethodLevel"/>
         <exclude name="AvoidThrowingNullPointerException"/>
         <exclude name="AvoidThrowingRawExceptionTypes"/>
@@ -55,12 +53,8 @@
         <exclude name="ExcessiveImports"/>
         <exclude name="ExcessivePublicCount"/>
         <exclude name="FieldDeclarationsShouldBeAtStartOfClass"/>
-        <exclude name="ForLoopsMustUseBraces"/>
         <exclude name="GodClass"/>
-        <exclude name="GuardDebugLogging"/>
         <exclude name="GuardLogStatement"/>
-        <exclude name="GuardLogStatementJavaUtil"/>
-        <exclude name="IfStmtsMustUseBraces"/>
         <exclude name="ImmutableField"/>
         <exclude name="LawOfDemeter"/>
         <exclude name="LocalVariableCouldBeFinal"/>
@@ -69,7 +63,6 @@
         <exclude name="LoosePackageCoupling"/>
         <exclude name="MethodArgumentCouldBeFinal"/>
         <exclude name="MethodReturnsInternalArray"/>
-        <exclude name="ModifiedCyclomaticComplexity"/>
         <exclude name="NullAssignment"/>
         <exclude name="OneDeclarationPerLine"/>
         <exclude name="OnlyOneReturn"/>
@@ -84,7 +77,6 @@
         <exclude name="ShortMethodName"/>
         <exclude name="ShortMethodName"/>
         <exclude name="ShortVariable"/>
-        <exclude name="StdCyclomaticComplexity"/>
         <exclude name="TooManyFields"/>
         <exclude name="TooManyMethods"/>
         <exclude name="TooManyStaticImports"/>
@@ -93,7 +85,7 @@
         <exclude name="UnusedPrivateMethod"/>
         <exclude name="UnnecessaryConstructor"/>
         <exclude name="UnnecessaryLocalBeforeReturn"/>
-        <exclude name="UnnecessaryParentheses"/>
+        <exclude name="UselessParentheses"/>
         <exclude name="UseConcurrentHashMap"/>
         <exclude name="UseCorrectExceptionLogging"/>
         <exclude name="UseIndexOfChar"/>
