@@ -35,6 +35,7 @@ logs
 .project
 .settings
 .pmd
+.tests
 .pmdruleset.xml
 .classpath
 .README.md.html
