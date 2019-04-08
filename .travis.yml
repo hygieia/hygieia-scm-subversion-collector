@@ -24,6 +24,8 @@ jdk:
 
 matrix:
   allow_failures:
+    - jdk: oraclejdk11
+    - jdk: openjdk11
     - jdk: openjdk12
 
 script:
