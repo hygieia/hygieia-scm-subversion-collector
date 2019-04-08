@@ -15,6 +15,13 @@
  limitations under the License.
 -->
 
+Hygieia Subversion SCM Collector
+================================
+
+[![Build Status](https://travis-ci.org/Hygieia/hygieia-subversion-scm-collector.svg?branch=master)](https://travis-ci.org/Hygieia/hygieia-subversion-scm-collector)
+[![Coverage Status](https://coveralls.io/repos/github/Hygieia/hygieia-subversion-scm-collector/badge.svg?branch=master)](https://coveralls.io/github/Hygieia/hygieia-subversion-scm-collector?branch=master)
+
+
 The README is in the [gh-pages](https://github.com/capitalone/Hygieia/blob/gh-pages/pages/hygieia/collectors/scm/subversion.md) branch. Please update it there.
 
 ---
