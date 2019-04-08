@@ -524,7 +524,7 @@
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <version>${coveralls.maven.plugin.version}</version>
                         <configuration>
-                            <timestampFormat>EpochMills</timestampFormat>
+                            <timestampFormat>EpochMillis</timestampFormat>
                         </configuration>
                     </plugin>
                 </plugins>
