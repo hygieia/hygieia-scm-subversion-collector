@@ -22,7 +22,7 @@ Hygieia Subversion SCM Collector
 [![Coverage Status](https://coveralls.io/repos/github/Hygieia/hygieia-subversion-scm-collector/badge.svg?branch=master)](https://coveralls.io/github/Hygieia/hygieia-subversion-scm-collector?branch=master)
 
 
-The README is in the [gh-pages](https://github.com/capitalone/Hygieia/blob/gh-pages/pages/hygieia/collectors/scm/subversion.md) branch. Please update it there.
+__Note.__ Another README is in the [gh-pages of the main HYGIEIA Repository](https://github.com/capitalone/Hygieia/blob/gh-pages/pages/hygieia/collectors/scm/subversion.md) branch. Please update it there.
 
 ---
 title: Subversion Collector
