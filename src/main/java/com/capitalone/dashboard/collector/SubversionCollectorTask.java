@@ -150,7 +150,7 @@ public class SubversionCollectorTask extends CollectorTask<Collector> {
           commitRepository.save(commit);
           commitCount++;
 
-          long revisionNumber = Long.valueOf(commit.getScmRevisionNumber());
+          long revisionNumber = Long.parseLong(commit.getScmRevisionNumber());
           if (revisionNumber > repo.getLatestRevision()) {
             repo.setLatestRev(revisionNumber);
           }

@@ -53,9 +53,10 @@
         <com.capitalone.dashboard.core.version>3.0.4</com.capitalone.dashboard.core.version>
         <commons.io.version>2.4</commons.io.version>
         <commons.lang.version>3.8.1</commons.lang.version>
+        <coveralls.maven.plugin.version>4.3.0</coveralls.maven.plugin.version>
         <developmentTeam>The Hygieia Team</developmentTeam>
         <jacoco.maven.plugin.version>0.8.3</jacoco.maven.plugin.version>
-        <jacoco.coverage.percentage.minimum>0.760</jacoco.coverage.percentage.minimum>
+        <jacoco.coverage.percentage.minimum>0.900</jacoco.coverage.percentage.minimum>
         <jacoco.classes.missed.minimum>15</jacoco.classes.missed.minimum>
         <java.compilation.source>1.8</java.compilation.source>
         <java.compilation.target>1.8</java.compilation.target>
@@ -136,6 +137,7 @@
     </dependencies>
 
     <build>
+        <defaultGoal>clean verify apache-rat:check japicmp:cmp checkstyle:check spotbugs:check javadoc:javadoc</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -210,14 +212,6 @@
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>${spotbugs.plugin.version}</version>
-                <dependencies>
-                    <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
-                    <dependency>
-                        <groupId>com.github.spotbugs</groupId>
-                        <artifactId>spotbugs</artifactId>
-                        <version>${spotbugs.plugin.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -273,7 +267,7 @@
                         <configuration>
                             <rules>
                                 <rule>
-                                    <element>PACKAGE</element>
+                                    <element>BUNDLE</element>
                                     <limits>
                                         <limit>
                                             <counter>INSTRUCTION</counter>
@@ -291,11 +285,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>${spotbugs.plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -517,6 +506,26 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>travis-jacoco</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco.maven.plugin.version}</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.eluder.coveralls</groupId>
+                        <artifactId>coveralls-maven-plugin</artifactId>
+                        <version>${coveralls.maven.plugin.version}</version>
+                        <configuration>
+                            <timestampFormat>EpochMills</timestampFormat>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
