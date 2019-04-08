@@ -106,3 +106,4 @@ The sample `application.properties` file lists parameter values to configure the
 		# Maximum number of previous days from current date, when fetching commits
 		subversion.commitThresholdDays=15
 ```
+
