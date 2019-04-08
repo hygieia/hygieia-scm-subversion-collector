@@ -49,6 +49,9 @@ The <action> type attribute can be add,update,fix,remove.
             <action issue="1" type="add" dev="chtompki">Unit Tests</action>
             <action issue="2" type="add" dev="chtompki">Checkstyle</action>
             <action issue="3" type="add" dev="chtompki">maven-changes-plugin</action>
+            <action issue="8" type="add" dev="chtompki">Integrate with TravisCI</action>
+            <action issue="9" type="add" dev="chtompki">Integrate with Coveralls</action>
+            <action issue="10" type="add" dev="chtompki">CONTRIBUTING.md file</action>
         </release>
 
     </body>

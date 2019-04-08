@@ -40,6 +40,22 @@ participating, you are expected to honor this code.
 Getting Started
 ---------------
 
+### Developent Environment
+
+For the most part, we are mererly concerned that you have [java](http://openjdk.java.net/) and 
+[maven](https://maven.apache.org/) installed in your project. For the sake of testing the project, we
+suggest that you regularly run: 
+
+```
+mvn clean test package site
+```
+
+after which you navigate to the project's `./target/site/index.html`, which you view in your browser. 
+From here, you can view the project's reports in the left side navigation listed "" 
+
+
+### Issue tracking
+
 + Make sure you're filimlar with the GitHub issue tracking system. Our issues page is available
 here: [https://github.com/Hygieia/hygieia-subversion-scm-collector/issues](https://github.com/Hygieia/hygieia-subversion-scm-collector/issues).
 + Submit a ticket for your issue, assuming one does not already exist.
