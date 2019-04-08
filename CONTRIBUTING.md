@@ -51,7 +51,9 @@ mvn clean test package site
 ```
 
 after which you navigate to the project's `./target/site/index.html`, which you view in your browser. 
-From here, you can view the project's reports in the left side navigation listed "" 
+From here, you can view the project's reports in the left side navigation listed under 
+"Project Documentation > Project Reports." Please ensure that your code does not add any new issues to the
+reports and is sufficiently documented. 
 
 
 ### Issue tracking
