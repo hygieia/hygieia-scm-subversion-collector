@@ -22,17 +22,6 @@ Hygieia Subversion SCM Collector
 [![Coverage Status](https://coveralls.io/repos/github/Hygieia/hygieia-subversion-scm-collector/badge.svg?branch=master)](https://coveralls.io/github/Hygieia/hygieia-subversion-scm-collector?branch=master)
 
 
-__Note.__ Another README is in the [gh-pages of the main HYGIEIA Repository](https://github.com/capitalone/Hygieia/blob/gh-pages/pages/hygieia/collectors/scm/subversion.md) branch. Please update it there.
-
----
-title: Subversion Collector
-tags:
-keywords:
-toc: true
-summary:
-sidebar: hygieia_sidebar
-permalink: subversion.html
----
 Configure the Subversion Collector to display and monitor information (related to code contribution activities) on the Hygieia Dashboard, from the Subversion repository. Hygieia uses Spring Boot to package the collector as an executable JAR file with dependencies.
 
 ### Setup Instructions
