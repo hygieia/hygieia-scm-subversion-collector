@@ -46,6 +46,11 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+        <site>
+            <id>c1.maven.plugins.website</id>
+            <name>Capital One Maven Plugins Site</name>
+            <url>scm:git:https://${github.username}@github.com/Hygieia/hygieia-subversion-scm-collector</url>
+        </site>
     </distributionManagement>
 
     <properties>
@@ -70,6 +75,8 @@
         <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
         <mockito.all.version>1.10.19</mockito.all.version>
         <org.joda.joda-convert.version>1.8.1</org.joda.joda-convert.version>
+        <site.publish.url>https://github.com/Hygieia/hygieia-subversion-scm-collector</site.publish.url>
+        <site.publish.checkout.directory>site-content</site.publish.checkout.directory>
         <spotbugs.plugin.version>3.1.11</spotbugs.plugin.version>
         <svnkit.version>1.8.7</svnkit.version>
     </properties>
@@ -283,6 +290,40 @@
                                 </rule>
                             </rules>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <version>${maven.scm.publish.plugin.version}</version>
+                <configuration>
+                    <content>${project.build.directory}/site</content>
+                    <checkoutDirectory>${site.publish.checkout.directory}</checkoutDirectory>
+                    <scmBranch>gh-pages</scmBranch>
+                    <tryUpdate>true</tryUpdate>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.9.5</version>
+                        <scope>compile</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.sonatype.plexus</groupId>
+                        <artifactId>plexus-cipher</artifactId>
+                        <version>1.4</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>scm-publish</id>
+                        <phase>site-deploy</phase>
+                        <!--  deploy site with maven-scm-publish-plugin  -->
+                        <goals>
+                            <goal>publish-scm</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -504,6 +545,50 @@
                                 <goals>
                                     <goal>announcement-generate</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>setup-checkout</id>
+            <activation>
+                <file>
+                    <missing>site-content</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>prepare-checkout</id>
+                                <phase>pre-site</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <exec executable="git">
+                                            <arg line="clone -b gh-pages --single-branch ${site.publish.url} ${site.publish.checkout.directory}" />
+                                        </exec>
+
+                                        <exec executable="git" dir="site-content">
+                                            <arg line="fetch origin gh-pages" />
+                                        </exec>
+
+                                        <exec executable="git" dir="site-content">
+                                            <arg line="reset --hard origin/gh-pages" />
+                                        </exec>
+
+                                        <pathconvert pathsep=" " property="dirs">
+                                            <dirset dir="${site.publish.checkout.directory}" includes="*" />
+                                        </pathconvert>
+                                    </tasks>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
