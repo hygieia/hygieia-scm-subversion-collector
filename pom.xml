@@ -30,6 +30,11 @@
         <version>3.0.1</version>
     </parent>
 
+    <organization>
+        <name>Capital One</name>
+        <url>http://www.capitalone.com</url>
+    </organization>
+
     <scm>
         <connection>scm:git:http://github.com/Hygieia/hygieia-subversion-svm-collector.git</connection>
         <developerConnection>scm:git:http://github.com/Hygieia/hygieia-subversion-svm-collector.git
