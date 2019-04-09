@@ -126,6 +126,99 @@
 <h2><a name="Hygieia_Subversion_SCM_Collector"></a>Hygieia Subversion SCM Collector</h2>
             Welcome ot the Hygieia Subversion SCM Collector
 
+            
+<div class="section">
+<h3><a name="Setup_Instructions"></a>Setup Instructions</h3>
+            
+<p>To configure the Subversion Collector, execute the following steps:</p>
+            
+<ul>
+                
+<li><b>Step 1: Change Directory</b></li>
+            </ul>
+            
+<p>Change the current working directory to the <tt>subversion</tt> directory of your Hygieia source code installation.</p>
+            
+<p>For example, in the Windows command prompt, run the following command:</p>
+            
+<div>
+<pre><tt>cd C:\Users\[username]\hygieia\collectors\scm\subversion</tt></pre></div>
+            
+<ul>
+                
+<li><b>Step 2: Run Maven Build</b></li>
+            </ul>
+            
+<p>Run the maven build to package the collector into an executable jar file:</p>
+            
+<div class="highlight highlight-source-shell">
+<div>
+<pre> mvn install</pre></div></div>
+            
+<p>The output file <tt>subversion-collector.jar</tt> is generated in the <tt>subversion\target</tt> folder.</p>
+            
+<ul>
+                
+<li><b>Step 3: Set Parameters in Application Properties File</b></li>
+            </ul>
+            
+<p>Set the configurable parameters in the <tt>application.properties</tt> file to connect to the Dashboard MongoDB database instance, including properties required by the Subversion Collector.</p>
+            
+<p>For information about sourcing the application properties file, refer to the <a class="externalLink" href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config-application-property-files" rel="nofollow">Spring Boot Documentation</a>.</p>
+            
+<p>To configure parameters for the Subversion Collector, refer to the sample <a href="#sample-application-properties-file">application.properties</a> file.</p>
+            
+<ul>
+                
+<li><b>Step 4: Deploy the Executable File</b></li>
+            </ul>
+            
+<p>To deploy the <tt>subversion-collector.jar</tt> file, change directory to <tt>subversion\target</tt>, and then execute the following from the command prompt:</p>
+            
+<div class="highlight highlight-source-shell">
+<div>
+<pre>java -jar subversion-collector.jar --spring.config.name=subversion --spring.config.location=[path to application.properties file]</pre></div></div>
+            </div>
+<div class="section">
+<h3><a name="Sample_Application_Properties_File"></a><a href="#sample-application-properties-file" id="user-content-sample-application-properties-file" class="anchor"></a>Sample Application Properties File</h3>
+            
+<p>The sample <tt>application.properties</tt> file lists parameter values to configure the Subversion Collector. Set the parameters based on your environment setup.</p>
+            
+<div class="highlight highlight-source-ini">
+<div>
+<pre>		<span class="pl-c"><span class="pl-c">#</span> Database Name</span>
+                <span class="pl-k">dbname</span>=dashboarddb
+
+                <span class="pl-c"><span class="pl-c">#</span> Database HostName - default is localhost</span>
+                <span class="pl-k">dbhost</span>=localhost
+
+                <span class="pl-c"><span class="pl-c">#</span> Database Port - default is 27017</span>
+                <span class="pl-k">dbport</span>=27017
+
+                <span class="pl-c"><span class="pl-c">#</span> MongoDB replicaset</span>
+                <span class="pl-k">dbreplicaset</span>=[false if you are not using MongoDB replicaset]
+                <span class="pl-k">dbhostport</span>=[host1:port1,host2:port2,host3:port3]
+
+                <span class="pl-c"><span class="pl-c">#</span> Database Username - default is blank</span>
+                <span class="pl-k">dbusername</span>=dashboarduser
+
+                <span class="pl-c"><span class="pl-c">#</span> Database Password - default is blank</span>
+                <span class="pl-k">dbpassword</span>=dbpassword
+
+                <span class="pl-c"><span class="pl-c">#</span> Logging File location</span>
+                <span class="pl-k">logging.file</span>=./logs/subversion.log
+
+                <span class="pl-c"><span class="pl-c">#</span> Collector schedule (required)</span>
+                <span class="pl-k">subversion.cron</span>=0 0/5 * * * *
+
+                <span class="pl-c"><span class="pl-c">#</span> Shared subversion username and password</span>
+                <span class="pl-k">subversion.username</span>=foo
+                <span class="pl-k">subversion.password</span>=bar
+                <span class="pl-k">subversion.host</span>=my.subversion.com
+
+                <span class="pl-c"><span class="pl-c">#</span> Maximum number of previous days from current date, when fetching commits</span>
+                <span class="pl-k">subversion.commitThresholdDays</span>=15</pre></div></div>
+            </div>
         </div>
         
 
