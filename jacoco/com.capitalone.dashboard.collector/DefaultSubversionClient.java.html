@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DefaultSubversionClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Hygieia Subversion SCM Collector</a> &gt; <a href="index.source.html" class="el_package">com.capitalone.dashboard.collector</a> &gt; <span class="el_source">DefaultSubversionClient.java</span></div><h1>DefaultSubversionClient.java</h1><pre class="source lang-java linenums">/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the &quot;License&quot;); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.capitalone.dashboard.collector;
+
+import com.capitalone.dashboard.model.Commit;
+import com.capitalone.dashboard.model.SubversionRepo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNLogEntry;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.io.SVNRepository;
+import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * SubversionClient implementation that uses SVNKit to fetch information about
+ * Subversion repositories.
+ */
+@Component
+public class DefaultSubversionClient implements SubversionClient {
+<span class="fc" id="L48">  private static final Log LOG = LogFactory.getLog(DefaultSubversionClient.class);</span>
+
+  private final SubversionSettings settings;
+
+  @Autowired
+<span class="fc" id="L53">  public DefaultSubversionClient(SubversionSettings settings) {</span>
+<span class="fc" id="L54">    this.settings = settings;</span>
+<span class="fc" id="L55">    DAVRepositoryFactory.setup();</span>
+<span class="fc" id="L56">  }</span>
+
+  @Override
+  public List&lt;Commit&gt; getCommits(SubversionRepo repo, long startRevision) {
+<span class="fc" id="L60">    List&lt;Commit&gt; commits = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    for (Object entry : getHistory(repo.getRepoUrl(), startRevision)) {</span>
+<span class="fc" id="L63">      SVNLogEntry logEntry = (SVNLogEntry) entry;</span>
+
+<span class="fc" id="L65">      Commit commit = new Commit();</span>
+<span class="fc" id="L66">      commit.setTimestamp(System.currentTimeMillis());</span>
+<span class="fc" id="L67">      commit.setScmUrl(repo.getRepoUrl());</span>
+<span class="fc" id="L68">      commit.setScmRevisionNumber(String.valueOf(logEntry.getRevision()));</span>
+<span class="fc" id="L69">      commit.setScmAuthor(logEntry.getAuthor());</span>
+<span class="fc" id="L70">      commit.setScmCommitLog(logEntry.getMessage());</span>
+<span class="fc" id="L71">      commit.setScmCommitTimestamp(logEntry.getDate().getTime());</span>
+<span class="fc" id="L72">      commit.setNumberOfChanges(logEntry.getChangedPaths().size());</span>
+<span class="fc" id="L73">      commits.add(commit);</span>
+<span class="fc" id="L74">    }</span>
+
+<span class="fc" id="L76">    return commits;</span>
+  }
+
+  /**
+   * Returns the recent repository revision number for the particular moment
+   * in time - the closest one before or at the specified datestamp.
+   *
+   * @param url          url of subversion repository.
+   * @param revisionDate revision date.
+   * @return the svn revision number.
+   */
+  public long getRevisionClosestTo(String url, Date revisionDate) {
+
+    try {
+<span class="nc" id="L90">      return getSvnRepository(url).getDatedRevision(revisionDate);</span>
+<span class="nc" id="L91">    } catch (SVNException svne) {</span>
+<span class="nc" id="L92">      LOG.error(&quot;Subversion repo: &quot; + url, svne);</span>
+    }
+
+<span class="nc" id="L95">    return 0;</span>
+  }
+
+  @SuppressWarnings(&quot;unchecked&quot;)
+  private Collection&lt;SVNLogEntry&gt; getHistory(String url, long startRevision) {
+<span class="fc" id="L100">    long endRevision = -1; //HEAD (the latest) revision</span>
+
+    try {
+<span class="fc" id="L103">      return getSvnRepository(url).log(</span>
+          new String[] {&quot;&quot;},
+          null,
+          startRevision,
+          endRevision,
+          true,
+          true
+      );
+<span class="nc" id="L111">    } catch (SVNException svne) {</span>
+<span class="nc" id="L112">      LOG.error(&quot;Subversion repo: &quot; + url, svne);</span>
+    }
+
+<span class="nc" id="L115">    return Collections.emptySet();</span>
+  }
+
+  private SVNRepository getSvnRepository(String url) throws SVNException {
+<span class="fc" id="L119">    SVNRepository repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));</span>
+<span class="fc" id="L120">    ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(</span>
+<span class="fc" id="L121">        settings.getUsername(), settings.getPassword());</span>
+<span class="fc" id="L122">    repository.setAuthenticationManager(authManager);</span>
+<span class="fc" id="L123">    return repository;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
