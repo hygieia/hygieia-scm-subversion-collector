@@ -32,5 +32,9 @@ We have a variety of plugins installed for generating reports. Notice the [repor
   need be individually licensed. Note, we accommodate for exceptions to this rule when files contain data that necesarily resides in a 
   format that precludes comments (e.g. JSON or CSV). Much like with the japicmp plugin, we highly suggest that the rules of licensing be 
   adhered to
-* [
+* spotbugs - static analysis. (take with a grain of salt, use it as a reason to re-read your code)
+* pmd - static anslysis (take with a grain of salt, use it as a reason to re-read your code)
+* [changes](https://maven.apache.org/plugins/maven-changes-plugin/) - a release notes generator assuming that the `src/changes/changes.xml` 
+  is sufficiently maintained.
+ * This plugin both generates a change report for the site as well as generating a `RELEASE-NOTES.txt` or `announcement.vm` if run properly: `mvn changes:announcement-generate`. Do read the site as it contains substancially more information.
 
