@@ -53,5 +53,6 @@ We have a variety of plugins installed for generating reports. Notice the [repor
 * pmd - static anslysis (take with a grain of salt, use it as a reason to re-read your code)
 * [changes](https://maven.apache.org/plugins/maven-changes-plugin/) - a release notes generator assuming that the `src/changes/changes.xml` 
   is sufficiently maintained.
- * This plugin both generates a change report for the site as well as generating a `RELEASE-NOTES.txt` or `announcement.vm` if run properly: `mvn changes:announcement-generate`. Do read the site as it contains substancially more information.
+  * This plugin both generates a change report for the site as well as generating a `RELEASE-NOTES.txt` or `announcement.vm` if run properly: `mvn changes:announcement-generate`. Do read 
+    the site as it contains substancially more information.
 
