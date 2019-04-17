@@ -55,4 +55,21 @@ We have a variety of plugins installed for generating reports. Notice the [repor
   is sufficiently maintained.
   * This plugin both generates a change report for the site as well as generating a `RELEASE-NOTES.txt` or `announcement.vm` if run properly: `mvn changes:announcement-generate`. Do read 
     the site as it contains substancially more information.
+    
+### Maintaining the `changes.xml`
+
+As stipulated above, the `maven-changes-plugin`, gives us the mechnism to generate both the
+release history for the maven site as well as generate `RELEASE-NOTES.txt`. Our configuration is
+such that we use the github issues for tracking our changes. Notice in the 
+[changes.xml](../changes/changes.xml), we have releases with individual `action`'s under them.
+Each action should correspond to a github issue.
+
+We're afforded the luxury now of having a variety of reports that can be built. For the 
+site's changes report, all we need worry about is the `mvn clean install site` command, and
+the report will get build into the site available at `./target/site/index.html`.
+
+Regarding generating the `RELEASE-NOTES.txt`, we run `mvn changes:announcement-generate`, and
+we get an `announcement.vm` file generated at `./target/announcement/announcement.vm`. We
+suggest that the release manager take this file and append it to the beginning of 
+`./RELEASE-NOTES.txt`, which if it does not exist, we suggest you create.
 
