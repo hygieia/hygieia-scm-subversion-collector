@@ -103,3 +103,16 @@ The sample `application.properties` file lists parameter values to configure the
 		subversion.commitThresholdDays=15
 ```
 
+# Developing.
+
+Before making any contribvutions, we suggest that you read the [CONTRIBUTING.md](CONTRIBUTING.md) and the 
+[Development Docs](./src) (housed in `./src/docs/README.md`). But for the most part, running:
+
+```
+mvn clean test install site
+``` 
+
+will test and generate the project metrics (navigable from the locally built `./target/site/index.html` 
+-- see "Project Reports" in the left nav for all of the available reports). We generally want these 
+reports to look good.
+
