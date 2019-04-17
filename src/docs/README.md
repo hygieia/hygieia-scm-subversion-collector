@@ -73,3 +73,40 @@ we get an `announcement.vm` file generated at `./target/announcement/announcemen
 suggest that the release manager take this file and append it to the beginning of 
 `./RELEASE-NOTES.txt`, which if it does not exist, we suggest you create.
 
+
+### Publishing the maven site to `gh-pages`.
+
+Now that we have a maven site that get's generated, we need to have set up 
+authenticaiton properly with github. Because of the way the Capital One proxy is setup
+we will want to use a `~/.netrc` file and clone from a url that looks like 
+`https://<githubId>@github.com/Hygieia/hygieia-subversion-scm-collector`. Your `~/.netrc` file should
+look like:
+
+```
+machine github.com
+login <github_username>
+password <github_oauth_token>
+
+machine api.github.com
+login <github_username>
+password <github_oauth_token>
+```
+
+With this in place you'll be able to use any github remote of the form `https://<github_username>@github.com/Org/Repo`,
+and you will be authenticated with github at the command line by default now.
+
+Once we set these permissions up, deploying the site from your local branch becomes releatively easy. You
+merely run the following:
+
+```
+mvn -Dgithub.username=<github_username> clean test package site site-deploy`
+```
+
+This will clone down the `gh-pages` branch under a local subdirectory sibling to `target` named `site-content` 
+(*note,* `site-content` is in the project's `.gitignore` so that we don't accidentally check in the site 
+to the master branch). The maven build will then copy the `./target/site` directory in to `./site-content` and 
+will perform a git push back up to the `gh-pages` branch, thus deploying the site.
+
+### Releasing `hygieia-subversion-scm-collector`.
+
+Lastly we want to describe how we perform a release.
