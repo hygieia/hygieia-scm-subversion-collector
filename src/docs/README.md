@@ -109,4 +109,6 @@ will perform a git push back up to the `gh-pages` branch, thus deploying the sit
 
 ### Releasing `hygieia-subversion-scm-collector`.
 
-Lastly we want to describe how we perform a release.
+__*TODO!*__
+
+Lastly we want to describe how we perform a release. But to do this, we need to actually do a release of the codebase.
