@@ -18,6 +18,11 @@
 Development Documentation.
 ==========================
 
+#### Other documentation in this area
+
+* [GnuPG Signing](gpg-signing.md) - A prerequisite for releasing to Maven Central.
+
+
 ### Prerequisites and sanity checks.
 
 It is suggested that you have:
@@ -109,6 +114,10 @@ will perform a git push back up to the `gh-pages` branch, thus deploying the sit
 
 ### Releasing `hygieia-subversion-scm-collector`.
 
-__*TODO!*__
+##### Preparing for the release
 
-Lastly we want to describe how we perform a release. But to do this, we need to actually do a release of the codebase.
+1. Run the build to see that everything passes properly. Specifically, check the site to ensure that all
+   requisite reports are clean.
+2. Ensure that any references in the project's documentation that specify a version point to the release
+   candidate version that we wish to create.
+3. Generate the release notes using the 
