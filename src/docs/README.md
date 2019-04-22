@@ -114,10 +114,12 @@ will perform a git push back up to the `gh-pages` branch, thus deploying the sit
 
 ### Releasing `hygieia-subversion-scm-collector`.
 
+__Note.__ You need to have set up your gpg signing mechanics. The setup guide is in [GnuPG Signing](gpg-signing.md).
+
 ##### Preparing for the release
 
 1. Run the build to see that everything passes properly. Specifically, check the site to ensure that all
    requisite reports are clean.
 2. Ensure that any references in the project's documentation that specify a version point to the release
    candidate version that we wish to create.
-3. Generate the release notes using the 
+3. Generate the release notes using the `maven-release-plugin`. Run `mvn clean changes:announcement-generate`.

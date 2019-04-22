@@ -453,6 +453,8 @@
                     <onlyCurrentVersion>false</onlyCurrentVersion>
                     <maxEntries>100</maxEntries>
                     <runOnlyAtExecutionRoot>false</runOnlyAtExecutionRoot>
+                    <template>release-notes.vm</template>
+                    <templateDirectory>src/changes</templateDirectory>
                     <issueLinkTemplatePerSystem>
                         <github>http://github.com/Hygieia/hygieia-subversion-scm-collector/issues/%ISSUE%</github>
                     </issueLinkTemplatePerSystem>
