@@ -122,4 +122,13 @@ __Note.__ You need to have set up your gpg signing mechanics. The setup guide is
    requisite reports are clean.
 2. Ensure that any references in the project's documentation that specify a version point to the release
    candidate version that we wish to create.
-3. Generate the release notes using the `maven-release-plugin`. Run `mvn clean changes:announcement-generate`.
+3. Checkout yourself onto a release branch either in your fork or upstream. We generally suggest that you
+   name the branch the version that you intend to use for the release.
+4. Upversion the pom.xml file to the version that you wish to create, ensuring that no `-SNAPSHOT` suffix is
+   present. You can either do this manually or using the `maven-versions-plugin` by running 
+   `mvn -DnewVersion=<theVersionYouWishToSet> -DgenerateBackupPoms=false versions:set`.
+5. Generate the release notes using the `maven-release-plugin`.
+   * Backup the `RELEASE-NOTES.txt` because the following command will overwrite it. We suggest you append the
+     old release notes to the end of the newly generated `RELEASE-NOTES.txt` file. 
+   * Run `mvn -Prelease-notes clean changes:announcement-generate`.
+6. Ensure that everything above is committed to your release branch.
