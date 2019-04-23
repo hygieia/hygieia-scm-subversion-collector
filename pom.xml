@@ -20,7 +20,7 @@
     <description>Subversion collector micorservice</description>
     <url>https://hygieia.github.io/Hygieia/getting_started.html</url>
     <packaging>jar</packaging>
-    <version>3.0.2-SNAPSHOT</version>
+    <version>3.0.2</version>
 
     <artifactId>subversion-collector</artifactId>
 

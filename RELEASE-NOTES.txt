@@ -1,0 +1,28 @@
+                    Hygieia Subversion SCM Collector 3.0.2-SNAPSHOT
+                             RELEASE NOTES
+
+The Hygieia Subversion SCM Collector team is pleased to announce the release of Hygieia Subversion SCM Collector 3.0.2-SNAPSHOT
+
+Subversion collector micorservice
+
+----
+
+Changes in this version include:
+
+New features:
+o 1: Unit Tests
+o 2: Checkstyle
+o 3: maven-changes-plugin
+o 8: Integrate with TravisCI
+o 9: Integrate with Coveralls
+o 10: CONTRIBUTING.md file
+o 11: Publish maven site to gh-pages branch
+o 15: Developer documentation
+
+
+Historical list of changes: https://github.com/Hygieia/hygieia-subversion-scm-collector/blob/master/src/changes/changes.xml
+
+For complete information on https://github.com/Hygieia/hygieia-subversion-scm-collector, including instructions on how to submit bug reports,
+patches, or suggestions for improvement, see the Hygieia website:
+
+https://hygieia.github.io/Hygieia/getting_started.html
