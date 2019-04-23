@@ -166,4 +166,9 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
     ```bash
     mvn -Duser.name=<your_github_username> -Prelease -Ptest-deploy clean test install site deploy
     ```
-9. Stage your release using the `settings.xml` created above from the credentials for
+9. Stage your release using the `settings.xml` created above from the credentials for maven central. 
+   We suggest that you not use these credentials in your normal `settings.xml` file as to ensure that you
+   only stage artifacts that you choose to stage. The stanging command will end up being:
+   ```bash
+   mvn -s <path_to_settings>/settings.xml -Duser.name=<your_github_username> -Prelease clean test package install site deploy
+   ```
