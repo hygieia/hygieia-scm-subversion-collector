@@ -116,6 +116,30 @@ will perform a git push back up to the `gh-pages` branch, thus deploying the sit
 
 __Note.__ You need to have set up your gpg signing mechanics. The setup guide is in [GnuPG Signing](gpg-signing.md).
 
+#### Setting up your maven settings.xml
+
+You will need a maven `settings.xml` file with credentials for maven central. To retrieve this, you will need to
+log into https://oss.sonatype.org with credentials retrieved from the committer team. There are two ways to do this: 
+(1) use the existent system account, or (2) open a Jira ticket with sonatype to onboard your username to the 
+staging target in the sonatype nexus instance. Then navigate to your username in the top right corner, and click
+"Profile." You should see a window with your profile and there's a little dropdown with the word "Summary" in
+it. Click on this and select "User Token." Click on the "Access User Token" button and re-enter the password. 
+You should see something that looks like (__Note__: there has be substantive obvuscations done on the below 
+credential set, so they should be invalid for our purposes):
+
+```xml
+<server>
+  <id>${server}</id>
+  <username>uA3vjikn</username>
+  <password>wv845nj2qYaGb58MS5Kx7jehunfewdnoLX/1ij53REIOJ</password>
+</server>
+```
+
+which can be pasted into your `settings.xml` file as credentials for the distribution servers listed in 
+the [pom.xml](../../pom.xml). Substitute `ossrh` for `${server}` in the above `id` field. You further may need
+to configure a `proxy` entry instructions for which can be found on [the Maven Project site's proxy 
+documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
+
 ##### Preparing for the release
 
 1. Run the build to see that everything passes properly. Specifically, check the site to ensure that all
@@ -132,3 +156,14 @@ __Note.__ You need to have set up your gpg signing mechanics. The setup guide is
      old release notes to the end of the newly generated `RELEASE-NOTES.txt` file. 
    * Run `mvn -Prelease-notes clean changes:announcement-generate`.
 6. Ensure that everything above is committed to your release branch.
+7. Create a git tag:
+    ```
+    $git tag -s subversion-collector-<version_number>-RC<RC_number>
+    ```
+    where the `version_number` represents the version of the maven artifact that you are going to build and 
+    `RC_number` represents the number of the release candidate that you are proposing to our community.
+8. Test your build using:
+    ```bash
+    mvn -Duser.name=<your_github_username> -Prelease -Ptest-deploy clean test install site deploy
+    ```
+9. Stage your release using the `settings.xml` created above from the credentials for
