@@ -63,7 +63,7 @@ here: [https://github.com/Hygieia/hygieia-subversion-scm-collector/issues](https
 + Submit a ticket for your issue, assuming one does not already exist.
   + Clearly describe the issue including steps to reproduce when it is a bug.
   + Make sure you fill in the earliest version that you know has the issue.
-  + Make sure you add the appropriate lables on the right hand side of the issue for tracking purposes.
+  + Make sure you add the appropriate labels on the right hand side of the issue for tracking purposes.
 + Fork the repository on GitHub.
 
 Making Changes
