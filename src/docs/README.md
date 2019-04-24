@@ -170,9 +170,17 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
    We suggest that you not use these credentials in your normal `settings.xml` file as to ensure that you
    only stage artifacts that you choose to stage. The stanging command will end up being:
    ```bash
-   mvn -s <path_to_settings>/settings.xml -Duser.name=<your_github_username> -Prelease clean test package install site deploy
+   mvn -s <path_to_settings>/settings.xml -Duser.name=<your_github_username> -Prelease clean test package site deploy
    ```
+   __Note.__ It is important that you not run `install` during this step as it will double the number of signatures.
 10. This will create a staging repository in https://oss.sonatype.org. You can navigate to the staging repositories
     by logging in and navigating to "Staging Repositories," on the left navigation. The repository will be named
     `comcapitalone-####` and will be "open." You can select the check box and either "close" or "drop" it. 
     __Note,__ do not click "Release" until you are completely ready to promote the build to maven central!!!!
+    Look through the staging repository to verify that everything in there is precisely what you want, and then
+    "close" it.
+11. Send an email to the Hygieia dev team for validation purposes. Assuming you get concensus, then you can 
+proceed with promoting the release.
+
+##### Promoting a release.
+    

@@ -55,6 +55,7 @@ The <action> type attribute can be add,update,fix,remove.
             <action issue="11" type="add" dev="chtompki">Publish maven site to gh-pages branch</action>
             <action issue="15" type="add" dev="chtompki">Developer documentation</action>
             <action issue="16" type="add" dev="chtompki">Document how to do gpg signing</action>
+            <action issue="17" type="add" dev="chtompki">Preparing a release documentation</action>
         </release>
 
     </body>
