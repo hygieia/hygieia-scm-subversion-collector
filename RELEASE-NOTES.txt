@@ -1,7 +1,7 @@
-                    Hygieia Subversion SCM Collector 3.0.2-SNAPSHOT
+                    Hygieia Subversion SCM Collector 3.0.2
                              RELEASE NOTES
 
-The Hygieia Subversion SCM Collector team is pleased to announce the release of Hygieia Subversion SCM Collector 3.0.2-SNAPSHOT
+The Hygieia Subversion SCM Collector team is pleased to announce the release of Hygieia Subversion SCM Collector 3.0.2
 
 Subversion collector micorservice
 
@@ -18,6 +18,8 @@ o 9: Integrate with Coveralls
 o 10: CONTRIBUTING.md file
 o 11: Publish maven site to gh-pages branch
 o 15: Developer documentation
+o 16: Document how to do gpg signing
+o 17: Preparing a release documentation
 
 
 Historical list of changes: https://github.com/Hygieia/hygieia-subversion-scm-collector/blob/master/src/changes/changes.xml
