@@ -60,6 +60,7 @@
 
     <properties>
         <apache.rat.plugin.version>0.13</apache.rat.plugin.version>
+        <bc.version>3.0.1</bc.version>
         <com.capitalone.dashboard.core.version>3.0.4</com.capitalone.dashboard.core.version>
         <commons.io.version>2.4</commons.io.version>
         <commons.lang.version>3.8.1</commons.lang.version>
@@ -68,6 +69,9 @@
         <jacoco.maven.plugin.version>0.8.3</jacoco.maven.plugin.version>
         <jacoco.coverage.percentage.minimum>0.900</jacoco.coverage.percentage.minimum>
         <jacoco.classes.missed.minimum>15</jacoco.classes.missed.minimum>
+        <japicmp.breakBuildOnBinaryIncompatibleModifications>true</japicmp.breakBuildOnBinaryIncompatibleModifications>
+        <japicmp.breakBuildOnSourceIncompatibleModifications>true</japicmp.breakBuildOnSourceIncompatibleModifications>
+        <japicmp.skip>false</japicmp.skip>
         <java.compilation.source>1.8</java.compilation.source>
         <java.compilation.target>1.8</java.compilation.target>
         <maven.changes.plugin.version>2.12.1</maven.changes.plugin.version>
@@ -171,18 +175,31 @@
                 <artifactId>japicmp-maven-plugin</artifactId>
                 <version>0.13.1</version>
                 <configuration>
+                    <oldVersion>
+                        <dependency>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <version>${bc.version}</version>
+                            <type>jar</type>
+                        </dependency>
+                    </oldVersion>
+                    <newVersion>
+                        <file>
+                            <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
+                        </file>
+                    </newVersion>
                     <parameter>
-                        <!-- see documentation -->
+                        <onlyModified>true</onlyModified>
+                        <breakBuildOnBinaryIncompatibleModifications>${japicmp.breakBuildOnBinaryIncompatibleModifications}</breakBuildOnBinaryIncompatibleModifications>
+                        <breakBuildOnSourceIncompatibleModifications>${japicmp.breakBuildOnSourceIncompatibleModifications}</breakBuildOnSourceIncompatibleModifications>
+                        <!-- skip japicmp on "mvn site" - use "mvn package site" to include report -->
+                        <ignoreMissingNewVersion>true</ignoreMissingNewVersion>
+                        <reportOnlyFilename>true</reportOnlyFilename>
+                        <skipPomModules>true</skipPomModules>
+                        <ignoreMissingClasses>false</ignoreMissingClasses>
                     </parameter>
+                    <skip>${japicmp.skip}</skip>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>cmp</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -394,6 +411,30 @@
                 <groupId>com.github.siom79.japicmp</groupId>
                 <artifactId>japicmp-maven-plugin</artifactId>
                 <version>0.13.1</version>
+                <configuration>
+                    <oldVersion>
+                        <dependency>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>${project.artifactId}</artifactId>
+                            <version>${bc.version}</version>
+                            <type>jar</type>
+                        </dependency>
+                    </oldVersion>
+                    <newVersion>
+                        <file>
+                            <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
+                        </file>
+                    </newVersion>
+                    <parameter>
+                        <onlyModified>true</onlyModified>
+                        <breakBuildOnBinaryIncompatibleModifications>${japicmp.breakBuildOnBinaryIncompatibleModifications}</breakBuildOnBinaryIncompatibleModifications>
+                        <breakBuildOnSourceIncompatibleModifications>${japicmp.breakBuildOnSourceIncompatibleModifications}</breakBuildOnSourceIncompatibleModifications>
+                        <!-- skip japicmp on "mvn site" - use "mvn package site" to include report -->
+                        <skipPomModules>true</skipPomModules>
+                        <ignoreMissingNewVersion>true</ignoreMissingNewVersion>
+                        <reportOnlyFilename>true</reportOnlyFilename>
+                    </parameter>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.rat</groupId>

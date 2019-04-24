@@ -172,3 +172,7 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
    ```bash
    mvn -s <path_to_settings>/settings.xml -Duser.name=<your_github_username> -Prelease clean test package install site deploy
    ```
+10. This will create a staging repository in https://oss.sonatype.org. You can navigate to the staging repositories
+    by logging in and navigating to "Staging Repositories," on the left navigation. The repository will be named
+    `comcapitalone-####` and will be "open." You can select the check box and either "close" or "drop" it. 
+    __Note,__ do not click "Release" until you are completely ready to promote the build to maven central!!!!
