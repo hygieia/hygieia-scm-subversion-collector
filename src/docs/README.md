@@ -179,8 +179,7 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
     __Note,__ do not click "Release" until you are completely ready to promote the build to maven central!!!!
     Look through the staging repository to verify that everything in there is precisely what you want, and then
     "close" it.
-11. Send an email to the Hygieia dev team for validation purposes. Assuming you get concensus, then you can 
-proceed with promoting the release.
+11. Log into [gitter]()
 
 ##### Promoting a release.
     
