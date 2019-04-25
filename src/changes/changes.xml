@@ -45,7 +45,10 @@ The <action> type attribute can be add,update,fix,remove.
     </properties>
     <body>
 
-        <release version="3.0.2" date="YYYY-MM-DD" description="----">
+        <release version="3.0.3" date="YYYY-MM-DD" description="TBD">
+        </release>
+
+        <release version="3.0.2" date="2019-04-25" description="----">
             <action issue="1" type="add" dev="chtompki">Unit Tests</action>
             <action issue="2" type="add" dev="chtompki">Checkstyle</action>
             <action issue="3" type="add" dev="chtompki">maven-changes-plugin</action>
