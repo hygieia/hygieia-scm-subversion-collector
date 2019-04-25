@@ -162,6 +162,11 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
     ```
     where the `version_number` represents the version of the maven artifact that you are going to build and 
     `RC_number` represents the number of the release candidate that you are proposing to our community.
+    * Github offer's a convenient documentation system in the tags area associated with adding 
+      RELEASE-NOTES.txt like documentation. Consider the following RC "pre-release" tag: 
+      https://github.com/Hygieia/hygieia-scm-subversion-collector/releases/tag/subversion-collector-3.0.2-RC1. Notice
+      that we've added all of the release artifacts as well as the release notes, and a link to
+      the [VOTE] thread for the sake of posterity. We suggest that all future releases have such documentation.
 8. Test your build using:
     ```bash
     mvn -Duser.name=<your_github_username> -Prelease -Ptest-deploy clean test install site deploy
@@ -179,7 +184,29 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
     __Note,__ do not click "Release" until you are completely ready to promote the build to maven central!!!!
     Look through the staging repository to verify that everything in there is precisely what you want, and then
     "close" it.
-11. Log into [gitter]()
+11. Log into [gitter](https://gitter.im/capitalone/Hygieia), and post a "[VOTE]" in the following manner 
+    (for version `3.0.2-RC1`):
+    ```
+    @/all - [VOTE] I propose we release the com.capitalone.dashboard:subversion-collector:3.0.2 from RC1
+    the git tag is here:
+    
+    https://github.com/Hygieia/hygieia-subversion-scm-collector/tree/subversion-collector-3.0.2-RC1
+    
+    the staging repository is located at:
+    
+    https://oss.sonatype.org/content/repositories/comcapitalone-1136/com/capitalone/dashboard/subversion-collector/3.0.2/
+    
+    Please review the release candidate (clone the repository, and build from the tag "mvn clean test install site" and vote accordingly.
+    
+    [ ] +1 Release these artifacts
+    [ ] +0 OK, but...
+    [ ] -0 OK, but really should fix...
+    [ ] -1 I oppose this release because...
+    ```
 
 ##### Promoting a release.
+
+If you have recieved 3 `+1` votes and no `-1` votes from project committers, it is safe to continue with 
+the release promotion process.
+
     
