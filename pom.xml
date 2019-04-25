@@ -229,9 +229,10 @@
                 <version>${apache.rat.plugin.version}</version>
                 <configuration>
                     <excludes>
-                        <exclude>.tests/**</exclude>
-                        <exclude>.tests/**</exclude>
-                        <exclude>logs/**</exclude>
+                        <exclude>**.tests/**</exclude>
+                        <exclude>**logs/**</exclude>
+                        <exclude>**site-content/**</exclude>
+                        <exclude>RELEASE-NOTES.txt</exclude>
                         <exclude>src/test/resources/org/tmatesoft/svn/test/apache.config.template</exclude>
                         <exclude>src/test/resources/org/tmatesoft/svn/test/test.properties.template</exclude>
                         <exclude>src/test/resources/org/tmatesoft/svn/test/svnserve.config.template</exclude>
@@ -442,8 +443,10 @@
                 <version>${apache.rat.plugin.version}</version>
                 <configuration>
                     <excludes>
-                        <exclude>.tests/**</exclude>
-                        <exclude>logs/**</exclude>
+                        <exclude>**.tests/**</exclude>
+                        <exclude>**logs/**</exclude>
+                        <exclude>**site-content/**</exclude>
+                        <exclude>RELEASE-NOTES.txt</exclude>
                         <exclude>src/test/resources/org/tmatesoft/svn/test/apache.config.template</exclude>
                         <exclude>src/test/resources/org/tmatesoft/svn/test/test.properties.template</exclude>
                         <exclude>src/test/resources/org/tmatesoft/svn/test/svnserve.config.template</exclude>
