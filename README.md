@@ -20,7 +20,7 @@ Hygieia Subversion SCM Collector
 
 [![Build Status](https://travis-ci.org/Hygieia/hygieia-subversion-scm-collector.svg?branch=master)](https://travis-ci.org/Hygieia/hygieia-subversion-scm-collector)
 [![Coverage Status](https://coveralls.io/repos/github/Hygieia/hygieia-subversion-scm-collector/badge.svg?branch=master)](https://coveralls.io/github/Hygieia/hygieia-subversion-scm-collector?branch=master)
-
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.capitalone.dashboard/subversion-collector/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.capitalone.dashboard/subversion-collector/)
 
 Configure the Subversion Collector to display and monitor information (related to code contribution activities) on the Hygieia Dashboard, from the Subversion repository. Hygieia uses Spring Boot to package the collector as an executable JAR file with dependencies.
 
