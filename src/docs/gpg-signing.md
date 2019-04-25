@@ -145,3 +145,11 @@ iLyPH1QAoI33Ft/0HBqLtqdtP4vWYQRbibjW
 ```
 
 which is what you will put in github or a `KEYS` file associated with a project.
+
+### Adding your public key to a keyserver.
+
+You need to add your public key to an external keyserver (all of which get mirrored around the world),
+before Maven Central will "accept" your signature. To do this, navigate to http://keys.gnupg.net/,
+ select "Submit Key," and copy the same block of text that you added to github from the [Adding your 
+ public key to github](#adding-your-public-key-to-github) section. You should then be able to sufficiently
+ close staging repositories in http://oss.sonatype.org.
