@@ -110,9 +110,9 @@ Removed:
 ## End of main loop
 #end
 
-Historical list of changes: https://github.com/Hygieia/hygieia-subversion-scm-collector/blob/master/src/changes/changes.xml
+Historical list of changes: https://github.com/Hygieia/hygieia-scm-subversion-collector/blob/master/src/changes/changes.xml
 
-For complete information on https://github.com/Hygieia/hygieia-subversion-scm-collector, including instructions on how to submit bug reports,
+For complete information on https://github.com/Hygieia/hygieia-scm-subversion-collector, including instructions on how to submit bug reports,
 patches, or suggestions for improvement, see the Hygieia website:
 
 ${project.url}

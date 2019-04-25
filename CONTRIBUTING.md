@@ -14,7 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-Contributing to the hygieia-subversion-scm-collector.
+Contributing to the hygieia-scm-subversion-collector.
 =====================================================
 
 You have found a bug or you have an idea for a cool new feature? Contributing code is a great way to
@@ -59,7 +59,7 @@ reports and is sufficiently documented.
 ### Issue tracking
 
 + Make sure you're filimlar with the GitHub issue tracking system. Our issues page is available
-here: [https://github.com/Hygieia/hygieia-subversion-scm-collector/issues](https://github.com/Hygieia/hygieia-subversion-scm-collector/issues).
+here: [https://github.com/Hygieia/hygieia-scm-subversion-collector/issues](https://github.com/Hygieia/hygieia-scm-subversion-collector/issues).
 + Submit a ticket for your issue, assuming one does not already exist.
   + Clearly describe the issue including steps to reproduce when it is a bug.
   + Make sure you fill in the earliest version that you know has the issue.

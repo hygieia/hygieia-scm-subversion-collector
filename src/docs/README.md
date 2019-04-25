@@ -34,11 +34,11 @@ installed before attempting to build the project. For the sake of building, test
 is suggested that you regularly run `mvn clean test install site` and view the maven generated site that gets built into 
 `${basedir}/target/site` (navigating to the `index.html` in here will serve the static site locally), where `${basedir}` 
 represents the directory containing the project's root locally cloned from github. Note, the site should look analogous to 
-https://hygieia.github.io/hygieia-subversion-scm-collector/ the github page.
+https://hygieia.github.io/hygieia-scm-subversion-collector/ the github page.
 
 ### Maven plugins.
 
-We have a variety of plugins installed for generating reports. Notice the [reports page on the site](https://hygieia.github.io/hygieia-subversion-scm-collector/project-reports.html) it has:
+We have a variety of plugins installed for generating reports. Notice the [reports page on the site](https://hygieia.github.io/hygieia-scm-subversion-collector/project-reports.html) it has:
 
 * javadoc
 * test javadoc
@@ -84,7 +84,7 @@ suggest that the release manager take this file and append it to the beginning o
 Now that we have a maven site that get's generated, we need to have set up 
 authenticaiton properly with github. Because of the way the Capital One proxy is setup
 we will want to use a `~/.netrc` file and clone from a url that looks like 
-`https://<githubId>@github.com/Hygieia/hygieia-subversion-scm-collector`. Your `~/.netrc` file should
+`https://<githubId>@github.com/Hygieia/hygieia-scm-subversion-collector`. Your `~/.netrc` file should
 look like:
 
 ```
@@ -112,7 +112,7 @@ This will clone down the `gh-pages` branch under a local subdirectory sibling to
 to the master branch). The maven build will then copy the `./target/site` directory in to `./site-content` and 
 will perform a git push back up to the `gh-pages` branch, thus deploying the site.
 
-### Releasing `hygieia-subversion-scm-collector`.
+### Releasing `hygieia-scm-subversion-collector`.
 
 __Note.__ You need to have set up your gpg signing mechanics. The setup guide is in [GnuPG Signing](gpg-signing.md).
 

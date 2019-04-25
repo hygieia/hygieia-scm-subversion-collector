@@ -16,7 +16,7 @@
     -->
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Hygieia Subversion SCM Collector</name>
+    <name>Hygieia SCM Subversion Collector</name>
     <description>Subversion collector micorservice</description>
     <url>https://hygieia.github.io/Hygieia/getting_started.html</url>
     <packaging>jar</packaging>
@@ -36,10 +36,10 @@
     </organization>
 
     <scm>
-        <connection>scm:git:http://github.com/Hygieia/hygieia-subversion-svm-collector.git</connection>
-        <developerConnection>scm:git:http://github.com/Hygieia/hygieia-subversion-svm-collector.git
+        <connection>scm:git:http://github.com/Hygieia/hygieia-scm-subversion-collector.git</connection>
+        <developerConnection>scm:git:http://github.com/Hygieia/hygieia-scm-subversion-collector.git
         </developerConnection>
-        <url>http://github.com/Hygieia/hygieia-subversion-svm-collector</url>
+        <url>http://github.com/Hygieia/hygieia-scm-subversion-collector</url>
     </scm>
 
     <distributionManagement>
@@ -54,7 +54,7 @@
         <site>
             <id>c1.maven.plugins.website</id>
             <name>Capital One Maven Plugins Site</name>
-            <url>scm:git:https://${github.username}@github.com/Hygieia/hygieia-subversion-scm-collector</url>
+            <url>scm:git:https://${github.username}@github.com/Hygieia/hygieia-scm-subversion-collector</url>
         </site>
     </distributionManagement>
 
@@ -86,7 +86,7 @@
         <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
         <mockito.all.version>1.10.19</mockito.all.version>
         <org.joda.joda-convert.version>1.8.1</org.joda.joda-convert.version>
-        <site.publish.url>https://github.com/Hygieia/hygieia-subversion-scm-collector</site.publish.url>
+        <site.publish.url>https://github.com/Hygieia/hygieia-scm-subversion-collector</site.publish.url>
         <site.publish.checkout.directory>site-content</site.publish.checkout.directory>
         <spotbugs.plugin.version>3.1.11</spotbugs.plugin.version>
         <svnkit.version>1.8.7</svnkit.version>
@@ -94,7 +94,7 @@
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/Hygieia/hygieia-subversion-scm-collector/issues</url>
+        <url>https://github.com/Hygieia/hygieia-scm-subversion-collector/issues</url>
     </issueManagement>
 
     <developers>
@@ -262,7 +262,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <configuration>
                     <skipDockerBuild>false</skipDockerBuild>
-                    <imageName>hygieia-subversion-scm-collector</imageName>
+                    <imageName>hygieia-scm-subversion-collector</imageName>
                     <dockerDirectory>${project.basedir}/docker</dockerDirectory>
                     <resources>
                         <resource>
@@ -500,7 +500,7 @@
                     <template>release-notes.vm</template>
                     <templateDirectory>src/changes</templateDirectory>
                     <issueLinkTemplatePerSystem>
-                        <github>http://github.com/Hygieia/hygieia-subversion-scm-collector/issues/%ISSUE%</github>
+                        <github>http://github.com/Hygieia/hygieia-scm-subversion-collector/issues/%ISSUE%</github>
                     </issueLinkTemplatePerSystem>
                 </configuration>
                 <reportSets>
