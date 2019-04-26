@@ -45,7 +45,8 @@ The <action> type attribute can be add,update,fix,remove.
     </properties>
     <body>
 
-        <release version="3.0.3" date="YYYY-MM-DD" description="TBD">
+        <release version="3.1" date="YYYY-MM-DD" description="TBD">
+            <action issue="18" type="add" dev="chtompki">Document release promotion.</action>
         </release>
 
         <release version="3.0.2" date="2019-04-25" description="----">
