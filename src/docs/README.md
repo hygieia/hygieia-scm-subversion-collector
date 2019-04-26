@@ -157,8 +157,8 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
    * Run `mvn -Prelease-notes clean changes:announcement-generate`.
 6. Ensure that everything above is committed to your release branch.
 7. Create a git tag:
-    ```
-    $git tag -s subversion-collector-<version_number>-RC<RC_number>
+    ```bash
+    $git tag -s subversion-collector-<version_number>-RC<RC_number> -m "<your message>"
     ```
     where the `version_number` represents the version of the maven artifact that you are going to build and 
     `RC_number` represents the number of the release candidate that you are proposing to our community.
@@ -169,13 +169,13 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
       the [VOTE] thread for the sake of posterity. We suggest that all future releases have such documentation.
 8. Test your build using:
     ```bash
-    mvn -Duser.name=<your_github_username> -Prelease -Ptest-deploy clean test install site deploy
+    $mvn -Duser.name=<your_github_username> -Prelease -Ptest-deploy clean test install site deploy
     ```
 9. Stage your release using the `settings.xml` created above from the credentials for maven central. 
    We suggest that you not use these credentials in your normal `settings.xml` file as to ensure that you
    only stage artifacts that you choose to stage. The stanging command will end up being:
    ```bash
-   mvn -s <path_to_settings>/settings.xml -Duser.name=<your_github_username> -Prelease clean test package site deploy
+   $mvn -s <path_to_settings>/settings.xml -Duser.name=<your_github_username> -Prelease clean test package site deploy
    ```
    __Note.__ It is important that you not run `install` during this step as it will double the number of signatures.
 10. This will create a staging repository in https://oss.sonatype.org. You can navigate to the staging repositories
@@ -203,10 +203,40 @@ documentation page](https://maven.apache.org/guides/mini/guide-proxies.html?).
     [ ] -0 OK, but really should fix...
     [ ] -1 I oppose this release because...
     ```
+12. We suggest that some amount of time be laid out in the above [VOTE] before it "closes" in order
+    to give sufficient time for a reasonable number of committers to validate the release. 
 
 ##### Promoting a release.
 
 If you have recieved 3 `+1` votes and no `-1` votes from project committers, it is safe to continue with 
 the release promotion process.
 
-    
+1. Announce to the gitter channel that you have tallied the votes and that you plan on 
+   promoting the release. Make note of the original vote for the sake of posterity.
+2. Log in to https://oss.sonatype.org, find the staging repository that you staged above, click it's 
+   checkbox and click "release." For the sake of posterity, it's worth putting the [VOTE] thread's
+   link in the comments. An example [VOTE] thread link follows as: https://gitter.im/capitalone/Hygieia/archives/2019/04/24
+3. Check out the RC tag from above and run the following git command:
+   ```bash
+   $git tag -s subversion-collector-<version_number> -m "<your message>"
+   ```
+   * Push this tag up to github and document it in a similar fashion as you did in the [Preparing 
+     for the release](#preparing-for-the-release) section.
+4. Checkout the tag you just created, and run
+   ```bash
+   $mvn -Dgithub.username=<your_github_username> clean test package site site-deploy
+   ```
+   * If this doesn't work, you may need to set up your [Publishing the 
+     maven site to `gh-pages`](#publishing-the-maven-site-to-gh-pages) authentication properly.
+5. Run `git checkout master`, then run `git merge subversion-collector-<version_of_release>`
+   and get all of the changes for the release on master.
+   * Make sure that your next commit is to ensure that the [`pom.xml`](../../pom.xml)'s `<version>` is the
+     next `-SNAPSHOT` you wish to release.
+   * Go to the [`changes.xml`](../changes/changes.xml), and ensure that you create a new `release` section
+     with no `actions` under the next version that you wish to use.
+   * Push all of your post release changes to `master` back up to the repository.
+6. Go to the project's [milestones](https://github.com/Hygieia/hygieia-scm-subversion-collector/milestones),
+   and ensure that the milestone related to the release that just went out get's closed and referenced
+   in the release tag. Furthermore, ensure that there is a milestone for the next version.
+7. __Wait for the release to show up in maven central.__
+8. Go out to [gitter](https://gitter.im/capitalone/Hygieia) and announce the release.
