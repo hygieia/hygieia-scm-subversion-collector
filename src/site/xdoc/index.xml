@@ -16,12 +16,12 @@
 <document>
     <properties>
         <title>Home</title>
-        <author email="christopher.tompkins@capitalone.com">Hygieia Team</author>
+        <author email="stephen.hughes@capitalone.com">Hygieia Team</author>
     </properties>
     <body>
         <!-- ================================================== -->
-        <section name="Hygieia Subversion SCM Collector">
-            Welcome ot the Hygieia Subversion SCM Collector
+        <section name="Hygieia SCM Subversion Collector">
+            Welcome ot the Hygieia SCM Subversion Collector
 
             <subsection name="Setup Instructions">
             <p>To configure the Subversion Collector, execute the following steps:</p>
