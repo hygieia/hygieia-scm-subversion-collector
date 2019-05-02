@@ -19,9 +19,9 @@ under the License.
 -->
 <rss version="0.91">
   <channel>
-    <title>Hygieia Subversion SCM Collector - Checkstyle report</title>
+    <title>Hygieia SCM Subversion Collector - Checkstyle report</title>
     <link>https://hygieia.github.io/Hygieia/getting_started.html</link>
-    <description>Hygieia Subversion SCM Collector - Checkstyle report</description>
+    <description>Hygieia SCM Subversion Collector - Checkstyle report</description>
     <language>en-us</language>
     <copyright>&#169;2019 Capital One</copyright>
     <item>
