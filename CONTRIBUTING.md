@@ -105,7 +105,5 @@ Submitting Changes
 Additional Resources (Note these are external for informational purposes)
 -------------------------------------------------------------------------
 
-+ [Contributing patches](https://commons.apache.org/patches.html)
-+ [Apache Commons Lang JIRA project page](https://issues.apache.org/jira/browse/LANG) (Just so you can see what it looks like in a real open source project).
 + [General GitHub documentation](https://help.github.com/)
 + [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
