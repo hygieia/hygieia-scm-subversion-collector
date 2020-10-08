@@ -67,7 +67,7 @@ For information about sourcing the application properties file, refer to the [Sp
 
 To configure parameters for the Subversion Collector, refer to the sample [application.properties](#sample-application-properties) section.
 
-*   **Step 4: Deploy the Executable File**
+*   **Step 3: Deploy the Executable File**
 
 To deploy the `subversion-collector.jar` file, change directory to `subversion\target`, and then execute the following from the command prompt:
 
