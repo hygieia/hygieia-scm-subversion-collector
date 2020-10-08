@@ -26,37 +26,46 @@ Hygieia SCM Subversion Collector
 
 Configure the Subversion Collector to display and monitor information (related to code contribution activities) on the Hygieia Dashboard, from the Subversion repository. Hygieia uses Spring Boot to package the collector as an executable JAR file with dependencies.
 
+# Table of Contents
+* [Setup Instructions](#setup-instructions)
+* [Sample Application Properties](#sample-application-properties)
+* [Developing](#developing)
+* [Run collector with Docker](#run-collector-with-docker)
+
 ### Setup Instructions
 
 To configure the Subversion Collector, execute the following steps:
 
-*   **Step 1: Change Directory**
+*	**Step 1 - Artifact Preparation:**
 
-Change the current working directory to the `subversion` directory of your Hygieia source code installation.
+	Please review the two options in Step 1 to find the best fit for you. 
 
-For example, in the Windows command prompt, run the following command:
+	***Option 1 - Download the artifact:***
 
-```
-cd C:\Users\[username]\hygieia\collectors\scm\subversion
-```
+	You can download the SNAPSHOTs from the SNAPSHOT directory [here](https://oss.sonatype.org/content/repositories/snapshots/com/capitalone/dashboard/subversion-collector/) or from the maven central repository [here](https://search.maven.org/artifact/com.capitalone.dashboard/subversion-collector).  
 
-*   **Step 2: Run Maven Build**
+	***Option 2 - Build locally:***
 
-Run the maven build to package the collector into an executable jar file:
+	To configure the Subversion Collector, git clone the [subversion collector repo](https://github.com/Hygieia/hygieia-scm-subversion-collector).  Then, execute the following steps:
 
-```bash
- mvn install
-```
+	To package the subversion collector source code into an executable JAR file, run the maven build from the `\hygieia-scm-subversion-collector` directory of your source code installation:
 
-The output file `subversion-collector.jar` is generated in the `subversion\target` folder.
+	```bash
+	mvn install
+	```
 
-*   **Step 3: Set Parameters in Application Properties File**
+	The output file `[collector name].jar` is generated in the `hygieia-scm-subversion-collector\target` folder.
+
+	Once you have chosen an option in Step 1, please proceed: 
+
+
+*   **Step 2: Set Parameters in Application Properties File**
 
 Set the configurable parameters in the `application.properties` file to connect to the Dashboard MongoDB database instance, including properties required by the Subversion Collector.
 
 For information about sourcing the application properties file, refer to the [Spring Boot Documentation](http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#boot-features-external-config-application-property-files).
 
-To configure parameters for the Subversion Collector, refer to the sample [application.properties](#sample-application-properties-file) file.
+To configure parameters for the Subversion Collector, refer to the sample [application.properties](#sample-application-properties) section.
 
 *   **Step 4: Deploy the Executable File**
 
@@ -66,9 +75,9 @@ To deploy the `subversion-collector.jar` file, change directory to `subversion\t
 java -jar subversion-collector.jar --spring.config.name=subversion --spring.config.location=[path to application.properties file]
 ```
 
-### Sample Application Properties File
+### Sample Application Properties
 
-The sample `application.properties` file lists parameter values to configure the Subversion Collector. Set the parameters based on your environment setup.
+The sample `application.properties` lists parameter values to configure the Subversion Collector. Set the parameters based on your environment setup.
 
 ```properties
 		# Database Name
@@ -107,7 +116,7 @@ The sample `application.properties` file lists parameter values to configure the
 
 # Developing.
 
-Before making any contribvutions, we suggest that you read the [CONTRIBUTING.md](CONTRIBUTING.md) and the 
+Before making any contributions, we suggest that you read the [CONTRIBUTING.md](CONTRIBUTING.md) and the 
 [Development Docs](./src) (housed in `./src/docs/README.md`). But for the most part, running:
 
 ```
@@ -117,4 +126,22 @@ mvn clean test install site
 will test and generate the project metrics (navigable from the locally built `./target/site/index.html` 
 -- see "Project Reports" in the left nav for all of the available reports). We generally want these 
 reports to look good.
+
+## Run collector with Docker
+
+You can install Hygieia by using a docker image from docker hub. This section gives detailed instructions on how to download and run with Docker. 
+
+*	**Step 1: Download**
+
+	Navigate to the docker hub location of your collector [here](https://hub.docker.com/u/hygieiadoc) and download the latest image (most recent version is preferred).  Tags can also be used, if needed.
+
+*	**Step 2: Run with Docker**
+
+	```Docker run -e SKIP_PROPERTIES_BUILDER=true -v properties_location:/hygieia/config image_name```
+	
+	- <code>-e SKIP_PROPERTIES_BUILDER=true</code>  <br />
+	indicates whether you want to supply a properties file for the java application. If false/omitted, the script will build a properties file with default values
+	- <code>-v properties_location:/hygieia/config</code> <br />
+	if you want to use your own properties file that located outside of docker container, supply the path here. 
+		- Example: <code>-v /Home/User/Document/application.properties:/hygieia/config</code>
 
