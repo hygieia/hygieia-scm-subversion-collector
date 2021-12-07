@@ -27,4 +27,4 @@ Historical list of changes: https://github.com/Hygieia/hygieia-scm-subversion-co
 For complete information on https://github.com/Hygieia/hygieia-scm-subversion-collector, including instructions on how to submit bug reports,
 patches, or suggestions for improvement, see the Hygieia website:
 
-https://hygieia.github.io/Hygieia/getting_started.html
+https://hygieia.github.io/hygieia/getting_started.html
